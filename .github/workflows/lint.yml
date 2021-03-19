@@ -16,14 +16,14 @@ jobs:
         linter: copyright
         distribution: foxy
         package-name: |
-            ros2bag
-            rosbag2_compression
-            rosbag2_compression_zstd
-            rosbag2_cpp
-            rosbag2_test_common
-            rosbag2_tests
-            rosbag2_transport
-            shared_queues_vendor
+            ros2bag_future
+            rosbag2_compression_future
+            rosbag2_compression_zstd_future
+            rosbag2_cpp_future
+            rosbag2_test_common_future
+            rosbag2_tests_future
+            rosbag2_transport_future
+            shared_queues_vendor_future
 
   ament_xmllint:
     name: ament_xmllint
@@ -37,16 +37,16 @@ jobs:
         linter: xmllint
         distribution: foxy
         package-name: |
-            ros2bag
-            rosbag2
-            rosbag2_compression
-            rosbag2_compression_zstd
-            rosbag2_cpp
-            rosbag2_test_common
-            rosbag2_tests
-            rosbag2_transport
-            shared_queues_vendor
-            sqlite3_vendor
+            ros2bag_future
+            rosbag2_future
+            rosbag2_compression_future
+            rosbag2_compression_zstd_future
+            rosbag2_cpp_future
+            rosbag2_test_common_future
+            rosbag2_tests_future
+            rosbag2_transport_future
+            shared_queues_vendor_future
+            sqlite3_vendor_future
 
   ament_lint_cpp: # Linters applicable to C++ packages
     name: ament_${{ matrix.linter }}
@@ -64,13 +64,13 @@ jobs:
         linter: ${{ matrix.linter }}
         distribution: foxy
         package-name: |
-            rosbag2_compression
-            rosbag2_compression_zstd
-            rosbag2_cpp
-            rosbag2_test_common
-            rosbag2_tests
-            rosbag2_transport
-            shared_queues_vendor
+            rosbag2_compression_future
+            rosbag2_compression_zstd_future
+            rosbag2_cpp_future
+            rosbag2_test_common_future
+            rosbag2_tests_future
+            rosbag2_transport_future
+            shared_queues_vendor_future
 
   ament_lint_python: # Linters applicable to Python packages
     name: ament_${{ matrix.linter }}
@@ -88,4 +88,4 @@ jobs:
         linter: ${{ matrix.linter }}
         distribution: foxy
         package-name: |
-            ros2bag
+            ros2bag_future

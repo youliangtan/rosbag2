@@ -15,20 +15,21 @@ jobs:
     container:
       image: rostooling/setup-ros-docker:ubuntu-focal-latest
     steps:
-    - uses: ros-tooling/action-ros-ci@0.1.0
+    - uses: ros-tooling/action-ros-ci@v0.1
       with:
         package-name: |
-          ros2bag
-          rosbag2_compression
-          rosbag2_cpp
-          rosbag2_storage
-          rosbag2_storage_default_plugins
-          rosbag2_transport
-          shared_queues_vendor
-          sqlite3_vendor
-          rosbag2_test_common
-          rosbag2_tests
-        target-ros2-distro: rolling
+          ros2bag_future
+          rosbag2_compression_future
+          rosbag2_cpp_future
+          rosbag2_storage_future
+          rosbag2_storage_default_plugins_future
+          rosbag2_transport_future
+          shared_queues_vendor_future
+          sqlite3_vendor_future
+          rosbag2_test_common_future
+          rosbag2_tests_future
+        target-ros2-distro: foxy
+        vcs-repo-file-url: ""
     - uses: actions/upload-artifact@v1
       with:
         name: colcon-logs
