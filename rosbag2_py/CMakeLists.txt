@@ -18,9 +18,9 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
 find_package(ament_cmake_ros REQUIRED)
-find_package(rosbag2_compression REQUIRED)
-find_package(rosbag2_cpp REQUIRED)
-find_package(rosbag2_storage REQUIRED)
+find_package(rosbag2_compression_future REQUIRED)
+find_package(rosbag2_cpp_future REQUIRED)
+find_package(rosbag2_storage_future REQUIRED)
 
 # Find python before pybind11
 find_package(python_cmake_module REQUIRED)
@@ -71,9 +71,9 @@ pybind11_add_module(_reader SHARED
   src/rosbag2_py/_reader.cpp
 )
 ament_target_dependencies(_reader PUBLIC
-  "rosbag2_compression"
-  "rosbag2_cpp"
-  "rosbag2_storage"
+  "rosbag2_compression_future"
+  "rosbag2_cpp_future"
+  "rosbag2_storage_future"
 )
 clean_windows_flags(_reader)
 
@@ -82,8 +82,8 @@ pybind11_add_module(_storage SHARED
   src/rosbag2_py/format_bag_metadata.cpp
 )
 ament_target_dependencies(_storage PUBLIC
-  "rosbag2_cpp"
-  "rosbag2_storage"
+  "rosbag2_cpp_future"
+  "rosbag2_storage_future"
 )
 clean_windows_flags(_storage)
 
@@ -91,9 +91,9 @@ pybind11_add_module(_writer SHARED
   src/rosbag2_py/_writer.cpp
 )
 ament_target_dependencies(_writer PUBLIC
-  "rosbag2_compression"
-  "rosbag2_cpp"
-  "rosbag2_storage"
+  "rosbag2_compression_future"
+  "rosbag2_cpp_future"
+  "rosbag2_storage_future"
 )
 clean_windows_flags(_writer)
 
@@ -101,8 +101,8 @@ pybind11_add_module(_info SHARED
   src/rosbag2_py/_info.cpp
 )
 ament_target_dependencies(_info PUBLIC
-  "rosbag2_cpp"
-  "rosbag2_storage"
+  "rosbag2_cpp_future"
+  "rosbag2_storage_future"
 )
 clean_windows_flags(_info)
 

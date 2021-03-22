@@ -41,7 +41,8 @@ std::shared_ptr<pluginlib::ClassLoader<InterfaceT>>
 get_class_loader()
 {
   const char * lookup_name = StorageTraits<InterfaceT>::name;
-  return std::make_shared<pluginlib::ClassLoader<InterfaceT>>("rosbag2_storage", lookup_name);
+  return std::make_shared<pluginlib::ClassLoader<InterfaceT>>(
+    "rosbag2_storage_future", lookup_name);
 }
 
 template<

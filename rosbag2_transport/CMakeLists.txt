@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(rosbag2_transport)
+project(rosbag2_transport_future)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -26,11 +26,11 @@ find_package(rcl REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rcutils REQUIRED)
 find_package(rmw REQUIRED)
-find_package(rosbag2_compression REQUIRED)
-find_package(rosbag2_cpp REQUIRED)
-find_package(rosbag2_storage REQUIRED)
+find_package(rosbag2_compression_future REQUIRED)
+find_package(rosbag2_cpp_future REQUIRED)
+find_package(rosbag2_storage_future REQUIRED)
 find_package(rmw_implementation_cmake REQUIRED)
-find_package(shared_queues_vendor REQUIRED)
+find_package(shared_queues_vendor_future REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED
@@ -49,24 +49,27 @@ ament_target_dependencies(${PROJECT_NAME}
   rclcpp
   rcutils
   rmw
-  rosbag2_compression
-  rosbag2_cpp
-  rosbag2_storage
-  shared_queues_vendor
+  rosbag2_compression_future
+  rosbag2_cpp_future
+  rosbag2_storage_future
+  shared_queues_vendor_future
   yaml_cpp_vendor
 )
 
 include(cmake/configure_python.cmake)
-ament_python_install_package(${PROJECT_NAME})
+ament_python_install_package(rosbag2_transport)
 add_library(rosbag2_transport_py
   SHARED
   src/rosbag2_transport/rosbag2_transport_python.cpp)
+target_include_directories(rosbag2_transport_py PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
 configure_python_c_extension_library(rosbag2_transport_py)
-target_link_libraries(rosbag2_transport_py rosbag2_transport)
+target_link_libraries(rosbag2_transport_py rosbag2_transport_future)
 ament_target_dependencies(rosbag2_transport_py
-  rosbag2_compression
-  rosbag2_cpp
-  rosbag2_storage
+  rosbag2_compression_future
+  rosbag2_cpp_future
+  rosbag2_storage_future
   rmw
 )
 # Causes the visibility macros to use dllexport rather than dllimport,
@@ -88,23 +91,23 @@ install(
 ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME})
 ament_export_targets(export_${PROJECT_NAME})
-ament_export_dependencies(rosbag2_cpp rosbag2_compression shared_queues_vendor yaml_cpp_vendor)
+ament_export_dependencies(rosbag2_cpp_future rosbag2_compression_future shared_queues_vendor_future yaml_cpp_vendor)
 
 function(create_tests_for_rmw_implementation)
   rosbag2_transport_add_gmock(test_record_all
     test/rosbag2_transport/test_record_all.cpp
-    LINK_LIBS rosbag2_transport
-    AMENT_DEPS rosbag2_cpp rosbag2_storage test_msgs rosbag2_test_common)
+    LINK_LIBS rosbag2_transport_future
+    AMENT_DEPS rosbag2_cpp_future rosbag2_storage_future test_msgs rosbag2_test_common_future)
 
   rosbag2_transport_add_gmock(test_record_all_no_discovery
     test/rosbag2_transport/test_record_all_no_discovery.cpp
-    LINK_LIBS rosbag2_transport
-    AMENT_DEPS rosbag2_cpp rosbag2_storage test_msgs rosbag2_test_common)
+    LINK_LIBS rosbag2_transport_future
+    AMENT_DEPS rosbag2_cpp_future rosbag2_storage_future test_msgs rosbag2_test_common_future)
 
   rosbag2_transport_add_gmock(test_play_timing
     test/rosbag2_transport/test_play_timing.cpp
-    LINK_LIBS rosbag2_transport
-    AMENT_DEPS rosbag2_cpp rosbag2_storage test_msgs rosbag2_test_common)
+    LINK_LIBS rosbag2_transport_future
+    AMENT_DEPS rosbag2_cpp_future rosbag2_storage_future test_msgs rosbag2_test_common_future)
 
   rosbag2_transport_add_gmock(test_rosbag2_node
     src/rosbag2_transport/generic_publisher.cpp
@@ -121,9 +124,9 @@ function(create_tests_for_rmw_implementation)
     AMENT_DEPS
       ament_index_cpp
       rclcpp
-      rosbag2_cpp
-      rosbag2_storage
-      rosbag2_test_common
+      rosbag2_cpp_future
+      rosbag2_storage_future
+      rosbag2_test_common_future
       test_msgs
       yaml_cpp_vendor)
 
@@ -135,7 +138,7 @@ function(create_tests_for_rmw_implementation)
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/rosbag2_transport>
     AMENT_DEPS
       rclcpp
-      rosbag2_test_common
+      rosbag2_test_common_future
       yaml_cpp_vendor)
 
   # disable the following tests for connext
@@ -147,36 +150,36 @@ function(create_tests_for_rmw_implementation)
 
   rosbag2_transport_add_gmock(test_record
     test/rosbag2_transport/test_record.cpp
-    AMENT_DEPS rosbag2_cpp rosbag2_storage test_msgs rosbag2_test_common
+    AMENT_DEPS rosbag2_cpp_future rosbag2_storage_future test_msgs rosbag2_test_common_future
     INCLUDE_DIRS $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/rosbag2_transport>
-    LINK_LIBS rosbag2_transport
+    LINK_LIBS rosbag2_transport_future
     ${SKIP_TEST})
 
   rosbag2_transport_add_gmock(test_record_regex
     test/rosbag2_transport/test_record_regex.cpp
-    LINK_LIBS rosbag2_transport
-    AMENT_DEPS test_msgs rosbag2_test_common
+    LINK_LIBS rosbag2_transport_future
+    AMENT_DEPS test_msgs rosbag2_test_common_future
     ${SKIP_TEST})
 
   rosbag2_transport_add_gmock(test_play
     src/rosbag2_transport/qos.cpp
     test/rosbag2_transport/test_play.cpp
     INCLUDE_DIRS $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/rosbag2_transport>
-    LINK_LIBS rosbag2_transport
-    AMENT_DEPS rosbag2_cpp rosbag2_storage test_msgs rosbag2_test_common
+    LINK_LIBS rosbag2_transport_future
+    AMENT_DEPS rosbag2_cpp_future rosbag2_storage_future test_msgs rosbag2_test_common_future
     ${SKIP_TEST})
 
   rosbag2_transport_add_gmock(test_play_loop
     test/rosbag2_transport/test_play_loop.cpp
     ${SKIP_TEST}
-    LINK_LIBS rosbag2_transport
-    AMENT_DEPS rosbag2_cpp rosbag2_storage test_msgs rosbag2_test_common)
+    LINK_LIBS rosbag2_transport_future
+    AMENT_DEPS rosbag2_cpp_future rosbag2_storage_future test_msgs rosbag2_test_common_future)
 
   rosbag2_transport_add_gmock(test_play_topic_remap
     test/rosbag2_transport/test_play_topic_remap.cpp
     ${SKIP_TEST}
-    LINK_LIBS rosbag2_transport
-    AMENT_DEPS rosbag2_cpp rosbag2_storage test_msgs rosbag2_test_common)
+    LINK_LIBS rosbag2_transport_future
+    AMENT_DEPS rosbag2_cpp_future rosbag2_storage_future test_msgs rosbag2_test_common_future)
 endfunction()
 
 if(BUILD_TESTING)
@@ -184,7 +187,7 @@ if(BUILD_TESTING)
   find_package(ament_index_cpp REQUIRED)
   find_package(ament_lint_auto REQUIRED)
   find_package(test_msgs REQUIRED)
-  find_package(rosbag2_test_common REQUIRED)
+  find_package(rosbag2_test_common_future REQUIRED)
   include(cmake/rosbag2_transport_add_gmock.cmake)
   ament_lint_auto_find_test_dependencies()
   call_for_each_rmw_implementation(create_tests_for_rmw_implementation)

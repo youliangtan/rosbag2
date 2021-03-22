@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(sqlite3_vendor)
+project(sqlite3_vendor_future)
 
 find_package(ament_cmake REQUIRED)
 

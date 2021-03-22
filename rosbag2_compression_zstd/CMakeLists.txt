@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(rosbag2_compression_zstd)
+project(rosbag2_compression_zstd_future)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -23,7 +23,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rcpputils REQUIRED)
-find_package(rosbag2_compression REQUIRED)
+find_package(rosbag2_compression_future REQUIRED)
 find_package(zstd_vendor REQUIRED)
 find_package(zstd REQUIRED)
 
@@ -37,10 +37,11 @@ target_include_directories(${PROJECT_NAME}
   $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(${PROJECT_NAME}
   rcpputils
-  rosbag2_compression
+  rosbag2_compression_future
+  zstd_vendor
   zstd)
 target_compile_definitions(${PROJECT_NAME} PRIVATE ROSBAG2_COMPRESSION_ZSTD_BUILDING_DLL)
-pluginlib_export_plugin_description_file(rosbag2_compression plugin_description.xml)
+pluginlib_export_plugin_description_file(rosbag2_compression_future plugin_description.xml)
 
 install(
   DIRECTORY include/
@@ -57,21 +58,21 @@ ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME})
 ament_export_targets(export_${PROJECT_NAME})
 # order matters here, first vendor, then zstd
-ament_export_dependencies(rcpputils rosbag2_compression zstd_vendor zstd)
+ament_export_dependencies(rcpputils rosbag2_compression_future zstd_vendor zstd)
 
 
 if(BUILD_TESTING)
   find_package(ament_cmake_gmock REQUIRED)
   find_package(ament_lint_auto REQUIRED)
   find_package(rclcpp REQUIRED)
-  find_package(rosbag2_test_common REQUIRED)
+  find_package(rosbag2_test_common_future REQUIRED)
   ament_lint_auto_find_test_dependencies()
 
   ament_add_gmock(test_zstd_compressor
     test/rosbag2_compression_zstd/test_zstd_compressor.cpp)
   target_include_directories(test_zstd_compressor PUBLIC include)
   target_link_libraries(test_zstd_compressor ${PROJECT_NAME})
-  ament_target_dependencies(test_zstd_compressor rclcpp rosbag2_test_common)
+  ament_target_dependencies(test_zstd_compressor rclcpp rosbag2_test_common_future)
 endif()
 
 ament_package()
