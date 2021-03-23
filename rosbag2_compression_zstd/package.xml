@@ -8,9 +8,8 @@
   <maintainer email="michael.jeronimo@openrobotics.org">Michael Jeronimo</maintainer>
   <maintainer email="ros-tooling@googlegroups.com">ROS 2 Tooling WG</maintainer>
   <license>Apache 2.0</license>
-  <conflict>rosbag2_compression_zstd</conflict>
-
   <author email="eknapp@amazon.com">Emerson Knapp</author>
+  <conflict>rosbag2_compression_zstd</conflict>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 

@@ -25,7 +25,7 @@ jobs:
           rosbag2_storage_default_plugins_future
           rosbag2_transport_future
           shared_queues_vendor_future
-          sqlite3_vendor_future
+          sqlite3_vendor
           rosbag2_test_common_future
           rosbag2_tests_future
         target-ros2-distro: foxy

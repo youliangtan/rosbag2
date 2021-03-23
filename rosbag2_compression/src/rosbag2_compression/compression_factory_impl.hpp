@@ -53,7 +53,7 @@ get_class_loader()
 {
   const auto lookup_name = CompressionTraits<InterfaceT>::name;
   return std::make_shared<pluginlib::ClassLoader<InterfaceT>>(
-    "rosbag2_compression", lookup_name);
+    "rosbag2_compression_future", lookup_name);
 }
 
 template<typename InterfaceT>

@@ -13,7 +13,7 @@
   <conflict>ros2bag</conflict>
 
   <depend>ros2cli</depend>
-  <depend>rosbag2_py_future</depend>
+  <depend>rosbag2_py</depend>
   <depend>rosbag2_transport_future</depend>
 
   <test_depend>ament_copyright</test_depend>

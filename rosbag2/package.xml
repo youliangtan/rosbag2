@@ -14,7 +14,7 @@
   <exec_depend>ros2bag_future</exec_depend>
   <exec_depend>rosbag2_compression_future</exec_depend>
   <exec_depend>rosbag2_cpp_future</exec_depend>
-  <exec_depend>rosbag2_py_future</exec_depend>
+  <exec_depend>rosbag2_py</exec_depend>
   <exec_depend>rosbag2_storage_future</exec_depend>
   <exec_depend>rosbag2_transport_future</exec_depend>
   <exec_depend>shared_queues_vendor_future</exec_depend>
@@ -22,7 +22,7 @@
   <!-- Default plugins -->
   <exec_depend>rosbag2_compression_zstd_future</exec_depend>
   <exec_depend>rosbag2_storage_default_plugins_future</exec_depend>
-  <exec_depend>sqlite3_vendor_future</exec_depend>
+  <exec_depend>sqlite3_vendor</exec_depend>
 
   <test_depend>rosbag2_test_common_future</test_depend>
   <test_depend>rosbag2_tests_future</test_depend>

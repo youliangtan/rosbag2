@@ -14,4 +14,5 @@
 
 from rpyutils import import_c_library
 
-rosbag2_transport_py = import_c_library('._rosbag2_transport_py', package='rosbag2_transport')
+rosbag2_transport_py = import_c_library(
+    '._rosbag2_transport_py', package='rosbag2_transport_future')
