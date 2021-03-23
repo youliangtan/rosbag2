@@ -24,7 +24,7 @@ find_package(ament_cmake REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rcpputils REQUIRED)
 find_package(rosbag2_compression_future REQUIRED)
-find_package(zstd_vendor REQUIRED)
+find_package(zstd_vendor_future REQUIRED)
 find_package(zstd REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED
@@ -38,7 +38,7 @@ target_include_directories(${PROJECT_NAME}
 ament_target_dependencies(${PROJECT_NAME}
   rcpputils
   rosbag2_compression_future
-  zstd_vendor
+  zstd_vendor_future
   zstd)
 target_compile_definitions(${PROJECT_NAME} PRIVATE ROSBAG2_COMPRESSION_ZSTD_BUILDING_DLL)
 pluginlib_export_plugin_description_file(rosbag2_compression_future plugin_description.xml)
@@ -58,7 +58,7 @@ ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME})
 ament_export_targets(export_${PROJECT_NAME})
 # order matters here, first vendor, then zstd
-ament_export_dependencies(rcpputils rosbag2_compression_future zstd_vendor zstd)
+ament_export_dependencies(rcpputils rosbag2_compression_future zstd_vendor_future zstd)
 
 
 if(BUILD_TESTING)

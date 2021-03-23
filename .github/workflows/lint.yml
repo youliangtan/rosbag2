@@ -47,6 +47,7 @@ jobs:
             rosbag2_transport_future
             shared_queues_vendor_future
             sqlite3_vendor
+            zstd_vendor_future
 
   ament_lint_cpp: # Linters applicable to C++ packages
     name: ament_${{ matrix.linter }}

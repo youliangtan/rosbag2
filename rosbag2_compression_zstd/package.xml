@@ -17,7 +17,7 @@
   <depend>rcpputils</depend>
   <depend>rcutils</depend>
   <depend>rosbag2_compression_future</depend>
-  <depend>zstd_vendor</depend>
+  <depend>zstd_vendor_future</depend>
 
   <test_depend>ament_cmake_gmock</test_depend>
   <test_depend>ament_lint_auto</test_depend>
