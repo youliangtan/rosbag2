@@ -25,8 +25,8 @@ find_package(pluginlib REQUIRED)
 find_package(rcpputils REQUIRED)
 find_package(rcutils REQUIRED)
 find_package(rosbag2_storage_future REQUIRED)
-find_package(sqlite3_vendor REQUIRED)
-find_package(SQLite3 REQUIRED)  # provided by sqlite3_vendor
+find_package(sqlite3_vendor_future REQUIRED)
+find_package(SQLite3 REQUIRED)  # provided by sqlite3_vendor_future
 find_package(yaml_cpp_vendor REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED
@@ -67,7 +67,7 @@ install(
 
 ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME})
-ament_export_dependencies(rosbag2_storage_future rcpputils rcutils sqlite3_vendor SQLite3)
+ament_export_dependencies(rosbag2_storage_future rcpputils rcutils sqlite3_vendor_future SQLite3)
 
 if(BUILD_TESTING)
   find_package(ament_cmake_gmock REQUIRED)

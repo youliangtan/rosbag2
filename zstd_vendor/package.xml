@@ -9,6 +9,7 @@
   <maintainer email="ros-tooling@googlegroups.com">ROS Tooling Working Group</maintainer>
   <license>Apache License 2.0</license>  <!-- the contents of this package are Apache 2.0 -->
   <license>BSD</license>  <!-- Zstd is BSD -->
+  <conflict>zstd_vendor</conflict>
 
   <url type="website">https://facebook.github.io/zstd/</url>
 

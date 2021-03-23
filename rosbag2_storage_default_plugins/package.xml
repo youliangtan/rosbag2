@@ -15,7 +15,7 @@
   <depend>rcpputils</depend>
   <depend>rcutils</depend>
   <depend>rosbag2_storage_future</depend>
-  <depend>sqlite3_vendor</depend>
+  <depend>sqlite3_vendor_future</depend>
   <depend>yaml_cpp_vendor</depend>
 
   <test_depend>ament_lint_auto</test_depend>

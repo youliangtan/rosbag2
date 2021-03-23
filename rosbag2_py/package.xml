@@ -10,7 +10,6 @@
   <license>Apache License 2.0</license>
   <author email="mabel@openrobotics.org">Mabel Zhang</author>
   <author email="jacob@openrobotics.org">Jacob Perron</author>
-  <conflict>rosbag2_py</conflict>
 
   <buildtool_depend>ament_cmake_ros</buildtool_depend>
   <buildtool_depend>ament_cmake_python</buildtool_depend>
