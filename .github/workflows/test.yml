@@ -20,6 +20,7 @@ jobs:
         package-name: |
           ros2bag_future
           rosbag2_compression_future
+          rosbag2_compression_zstd_future
           rosbag2_cpp_future
           rosbag2_storage_future
           rosbag2_storage_default_plugins_future
