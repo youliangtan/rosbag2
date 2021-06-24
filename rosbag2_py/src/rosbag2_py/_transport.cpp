@@ -146,9 +146,9 @@ public:
   Recorder()
   {
     rclcpp::init(0, nullptr);
-    // std::signal(SIGTERM, [](int/* signal */) {
-    //   rclcpp::shutdown();
-    // });
+    std::signal(SIGTERM, [](int/* signal */) {
+      rclcpp::shutdown();
+    });
   }
 
   virtual ~Recorder()
