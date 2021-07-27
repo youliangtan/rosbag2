@@ -17,6 +17,7 @@
 #define ROSBAG2_CPP__READER_HPP_
 
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -54,9 +55,12 @@ class BaseReaderInterface;
 class ROSBAG2_CPP_PUBLIC Reader final
 {
 public:
-  explicit Reader(
-    std::unique_ptr<reader_interfaces::BaseReaderInterface> reader_impl =
-    std::make_unique<readers::SequentialReader>());
+  using ReaderImplPtr = std::shared_ptr<reader_interfaces::BaseReaderInterface>;
+  using ReaderImplVector = std::vector<ReaderImplPtr>;
+
+  explicit Reader(ReaderImplVector reader_impls);
+
+  explicit Reader(ReaderImplPtr = std::make_shared<readers::SequentialReader>());
 
   ~Reader();
 
@@ -76,6 +80,9 @@ public:
    **/
   void open(const std::string & uri);
 
+  using StorageOptionsVector = std::vector<rosbag2_storage::StorageOptions>;
+  using ConverterOptionsVector = std::vector<ConverterOptions>;
+
   /**
    * Throws if file could not be opened.
    * This must be called before any other function is used.
@@ -92,6 +99,10 @@ public:
   void open(
     const rosbag2_storage::StorageOptions & storage_options,
     const ConverterOptions & converter_options = ConverterOptions());
+
+  void open(
+    const StorageOptionsVector & storage_options,
+    const ConverterOptionsVector & converter_options = ConverterOptionsVector({ConverterOptions()}));
 
   /**
    * Closing the reader instance.
@@ -171,11 +182,19 @@ public:
 
   reader_interfaces::BaseReaderInterface & get_implementation_handle() const
   {
-    return *reader_impl_;
+    return *readers_[0].reader;
   }
 
 private:
-  std::unique_ptr<reader_interfaces::BaseReaderInterface> reader_impl_;
+  // This is an ugly data structure to keep related things together. It can be significantly
+  // improved using maps and queues, but for now it's left as-is to get things working.
+  using NextMessage = std::optional<std::shared_ptr<rosbag2_storage::SerializedBagMessage>>;
+  struct ChildReader {
+    ReaderImplPtr reader;
+    NextMessage next_message;
+  };
+  using ReaderStore = std::vector<ChildReader>;
+  ReaderStore readers_;
 };
 
 }  // namespace rosbag2_cpp

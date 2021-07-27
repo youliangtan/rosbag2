@@ -187,6 +187,13 @@ if(BUILD_TESTING)
     target_link_libraries(test_message_cache ${PROJECT_NAME})
   endif()
 
+  ament_add_gmock(test_merge
+    test/rosbag2_cpp/test_merge.cpp)
+  if(TARGET test_merge)
+    ament_target_dependencies(test_merge rosbag2_storage rosbag2_test_common test_msgs)
+    target_link_libraries(test_merge ${PROJECT_NAME})
+  endif()
+
 
   # If compiling with gcc, run this test with sanitizers enabled
   ament_add_gmock(test_ros2_message
