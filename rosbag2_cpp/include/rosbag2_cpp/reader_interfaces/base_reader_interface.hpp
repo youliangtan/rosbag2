@@ -37,23 +37,11 @@ class ROSBAG2_CPP_PUBLIC BaseReaderInterface
 public:
   virtual ~BaseReaderInterface() {}
 
-  virtual void open(
-    const rosbag2_storage::StorageOptions & storage_options,
-    const ConverterOptions & converter_options) = 0;
-
-  virtual void close() = 0;
-
   virtual bool has_next() = 0;
 
   virtual std::shared_ptr<rosbag2_storage::SerializedBagMessage> read_next() = 0;
 
-  virtual const rosbag2_storage::BagMetadata & get_metadata() const = 0;
-
   virtual std::vector<rosbag2_storage::TopicMetadata> get_all_topics_and_types() const = 0;
-
-  virtual void set_filter(const rosbag2_storage::StorageFilter & storage_filter) = 0;
-
-  virtual void reset_filter() = 0;
 };
 
 }  // namespace reader_interfaces

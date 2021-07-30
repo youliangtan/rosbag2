@@ -46,9 +46,6 @@ namespace rosbag2_cpp
 namespace reader_interfaces
 {
 class BaseReaderInterface;
-class SingleBagReaderInterface;
-class FilteredBagReaderInterface;
-class MetadataReaderInterface;
 }  // namespace reader_interfaces
 
 /**
@@ -77,7 +74,7 @@ public:
    *
    * \param storage_uri URI of the storage to open.
    **/
-  void open(const std::string & uri);
+  //void open(const std::string & uri);
 
   /**
    * Throws if file could not be opened.
@@ -92,14 +89,14 @@ public:
    * \param storage_options Options to configure the storage
    * \param converter_options Options for specifying the output data format
    */
-  void open(
-    const rosbag2_storage::StorageOptions & storage_options,
-    const ConverterOptions & converter_options = ConverterOptions());
+  //void open(
+    //const rosbag2_storage::StorageOptions & storage_options,
+    //const ConverterOptions & converter_options = ConverterOptions());
 
   /**
    * Closing the reader instance.
    */
-  void close();
+  //void close();
 
   /**
    * Ask whether the underlying bagfile contains at least one more message.

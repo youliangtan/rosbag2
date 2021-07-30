@@ -21,6 +21,9 @@
 
 #include "rosbag2_cpp/converter.hpp"
 #include "rosbag2_cpp/reader_interfaces/base_reader_interface.hpp"
+#include "rosbag2_cpp/reader_interfaces/single_bag_opener_interface.hpp"
+#include "rosbag2_cpp/reader_interfaces/filtered_reader_interface.hpp"
+#include "rosbag2_cpp/reader_interfaces/metadata_reader_interface.hpp"
 #include "rosbag2_cpp/serialization_format_converter_factory.hpp"
 #include "rosbag2_cpp/serialization_format_converter_factory_interface.hpp"
 #include "rosbag2_cpp/visibility_control.hpp"
@@ -45,10 +48,15 @@ namespace readers
 {
 
 class ROSBAG2_CPP_PUBLIC SequentialReader
-  : public ::rosbag2_cpp::reader_interfaces::BaseReaderInterface
+  : public ::rosbag2_cpp::reader_interfaces::BaseReaderInterface,
+    public ::rosbag2_cpp::reader_interfaces::SingleBagOpenerInterface,
+    public ::rosbag2_cpp::reader_interfaces::MetadataReaderInterface,
+    public ::rosbag2_cpp::reader_interfaces::FilteredReaderInterface
 {
 public:
   SequentialReader(
+    const rosbag2_storage::StorageOptions & storage_options,
+    const ConverterOptions & converter_options,
     std::unique_ptr<rosbag2_storage::StorageFactoryInterface> storage_factory =
     std::make_unique<rosbag2_storage::StorageFactory>(),
     std::shared_ptr<SerializationFormatConverterFactoryInterface> converter_factory =
@@ -58,19 +66,13 @@ public:
 
   virtual ~SequentialReader();
 
-  void open(
-    const rosbag2_storage::StorageOptions & storage_options,
-    const ConverterOptions & converter_options) override;
-
-  void close() override;
-
   bool has_next() override;
 
   std::shared_ptr<rosbag2_storage::SerializedBagMessage> read_next() override;
 
-  const rosbag2_storage::BagMetadata & get_metadata() const override;
-
   std::vector<rosbag2_storage::TopicMetadata> get_all_topics_and_types() const override;
+
+  const rosbag2_storage::BagMetadata & get_metadata() const override;
 
   void set_filter(const rosbag2_storage::StorageFilter & storage_filter) override;
 
