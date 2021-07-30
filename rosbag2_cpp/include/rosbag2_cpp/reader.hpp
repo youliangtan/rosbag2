@@ -46,6 +46,9 @@ namespace rosbag2_cpp
 namespace reader_interfaces
 {
 class BaseReaderInterface;
+class SingleBagReaderInterface;
+class FilteredBagReaderInterface;
+class MetadataReaderInterface;
 }  // namespace reader_interfaces
 
 /**
