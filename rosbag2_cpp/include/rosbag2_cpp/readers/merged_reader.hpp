@@ -33,7 +33,7 @@ namespace rosbag2_cpp
 namespace readers
 {
 
-class ROSBAG2_CPP_PUBLIC AggregateReader
+class ROSBAG2_CPP_PUBLIC MergedReader
   : public ::rosbag2_cpp::reader_interfaces::BaseReaderInterface
 {
 public:

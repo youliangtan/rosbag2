@@ -37,6 +37,8 @@ class ROSBAG2_CPP_PUBLIC BaseReaderInterface
 public:
   virtual ~BaseReaderInterface() {}
 
+  virtual void reopen() = 0;
+
   virtual bool has_next() = 0;
 
   virtual std::shared_ptr<rosbag2_storage::SerializedBagMessage> read_next() = 0;

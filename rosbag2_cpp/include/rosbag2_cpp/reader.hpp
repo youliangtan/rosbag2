@@ -60,6 +60,8 @@ public:
 
   ~Reader();
 
+  void reopen();
+
   /**
    * Opens an existing bagfile and prepare it for reading messages.
    * The bagfile must exist.

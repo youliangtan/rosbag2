@@ -93,11 +93,9 @@ TEST(merge, all_messages_from_all_readers_are_played)
   bag1_reader->prepare(bag1_messages, bag1_topic_types);
   auto bag2_reader = std::make_shared<MockSequentialReader>();
   bag2_reader->prepare(bag2_messages, bag2_topic_types);
-  rosbag2_cpp::Reader::ReaderImplVector readers({bag1_reader, bag2_reader});
-
-  auto reader =
-    std::make_shared<rosbag2_cpp::Reader>(readers);
-  reader->open(rosbag2_storage::StorageOptions(), rosbag2_cpp::ConverterOptions());
+  auto aggregate_reader = std::make_shared<rosbag2_cpp::readers::MergedReader>(
+    {bag1_reader, bag2_reader});
+  auto reader =std::make_shared<rosbag2_cpp::Reader>(aggregate_reader);
 
   {
     EXPECT_TRUE(reader->has_next());

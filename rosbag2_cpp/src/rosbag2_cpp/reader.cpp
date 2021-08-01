@@ -52,6 +52,11 @@ void Reader::open(
   reader_impl_->open(storage_options, converter_options);
 }
 
+void Reader::reopen()
+{
+  reader_impl_->reopen();
+}
+
 void Reader::close()
 {
   reader_impl_->close();

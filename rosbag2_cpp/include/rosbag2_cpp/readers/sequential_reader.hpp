@@ -66,6 +66,8 @@ public:
 
   virtual ~SequentialReader();
 
+  void reopen() override;
+
   bool has_next() override;
 
   std::shared_ptr<rosbag2_storage::SerializedBagMessage> read_next() override;
