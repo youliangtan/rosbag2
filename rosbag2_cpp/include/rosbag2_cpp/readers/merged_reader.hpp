@@ -33,13 +33,14 @@ namespace rosbag2_cpp
 namespace readers
 {
 
-class ROSBAG2_CPP_PUBLIC MergedReader
+class ROSBAG2_CPP_PUBLIC AggregateReader
   : public ::rosbag2_cpp::reader_interfaces::BaseReaderInterface
 {
 public:
-  using ReaderVector = std::vector<std::shared_ptr<reader_interfaces::BaseReaderInterface>>;
+  using ReaderImplPtr = std::shared_ptr<reader_interfaces::BaseReaderInterface>;
+  using ReaderVector = std::vector<ReaderImplPtr>;
 
-  AggregateReader(ReaderVector &child_readers);
+  AggregateReader(ReaderVector & child_readers);
 
   virtual ~AggregateReader();
 
@@ -50,7 +51,13 @@ public:
   std::vector<rosbag2_storage::TopicMetadata> get_all_topics_and_types() const override;
 
 private:
-  ReaderVector child_readers_;
+  using NextMessage = std::optional<std::shared_ptr<rosbag2_storage::SerializedBagMessage>>;
+  struct ChildReader {
+    ReaderImplPtr reader;
+    NextMessage next_message;
+  };
+  using ReaderStore = std::vector<ChildReader>;
+  ReaderStore readers_;
 };
 
 }  // namespace readers

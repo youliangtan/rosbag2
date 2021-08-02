@@ -16,3 +16,70 @@
 */
 
 #include "rosbag2_cpp/readers/merged_reader.hpp"
+
+namespace rosbag2_cpp
+{
+namespace readers
+{
+
+AggregateReader::AggregateReader(ReaderVector && child_readers)
+{
+  for (auto&& r: reader_impls) {
+    readers_.push_back(ChildReader({std::move(r), std::nullopt}));
+  }
+}
+
+AggregateReader::~AggregateReader()
+{
+  // Do nothing (child readers will automatically close when destructed)
+}
+
+bool AggregateReader::has_next()
+{
+  bool has_next = false;
+  for (const auto& r: readers_) {
+    if (r.next_message != std::nullopt) {
+      has_next = true;
+      break;
+    }
+  }
+
+  return has_next;
+}
+
+std::shared_ptr<rosbag2_storage::SerializedBagMessage> read_next()
+{
+  std::optional<size_t> earliest_index = std::nullopt;
+  size_t current_index = 0;
+  rcutils_time_point_value_t earliest_time = std::numeric_limits<rcutils_time_point_value_t>::max();
+
+  for (const auto& r: readers_) {
+    if (r.next_message != std::nullopt) {
+      if (r.next_message.value()->time_stamp < earliest_time) {
+        earliest_time = r.next_message.value()->time_stamp;
+        earliest_index = current_index;
+      }
+    }
+    ++current_index;
+  }
+
+  if (earliest_index == std::nullopt) {
+    throw std::runtime_error("No next message available");
+  } else {
+    auto result = readers_[earliest_index.value()].next_message.value();
+    if (readers_[earliest_index.value()].reader->has_next()) {
+      readers_[earliest_index.value()].next_message =
+        readers_[earliest_index.value()].reader->read_next();
+    } else {
+      readers_[earliest_index.value()].next_message = std::nullopt;
+    }
+    return result;
+  }
+}
+
+std::vector<rosbag2_storage::TopicMetadata> get_all_topics_and_types()
+{
+}
+
+}  // namespace readers
+}  // namespace rosbag2_cpp
