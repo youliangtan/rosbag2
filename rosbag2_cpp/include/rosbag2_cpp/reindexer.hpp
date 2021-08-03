@@ -109,7 +109,7 @@ private:
   // Attempts to harvest metadata from all bag files, and aggregates the result
   void aggregate_metadata(
     const std::vector<rcpputils::fs::path> & files,
-    const std::unique_ptr<rosbag2_cpp::readers::SequentialReader> & bag_reader,
+    const std::shared_ptr<rosbag2_cpp::readers::SequentialReader> & bag_reader,
     const rosbag2_storage::StorageOptions & storage_options);
 
   // Comparison function for std::sort with our filepath convention

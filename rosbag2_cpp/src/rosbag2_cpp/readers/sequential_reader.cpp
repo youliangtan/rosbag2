@@ -58,80 +58,35 @@ std::vector<std::string> resolve_relative_paths(
 }  // namespace details
 
 SequentialReader::SequentialReader(
+  const rosbag2_storage::StorageOptions & storage_options,
+  const ConverterOptions & converter_options,
   std::unique_ptr<rosbag2_storage::StorageFactoryInterface> storage_factory,
   std::shared_ptr<SerializationFormatConverterFactoryInterface> converter_factory,
   std::unique_ptr<rosbag2_storage::MetadataIo> metadata_io)
 : storage_factory_(std::move(storage_factory)),
   converter_(nullptr),
   metadata_io_(std::move(metadata_io)),
-  converter_factory_(std::move(converter_factory))
-{}
-
-SequentialReader::~SequentialReader()
+  converter_factory_(std::move(converter_factory)),
+  converter_options_(converter_options)
 {
-  close();
+  storage_options_ = storage_options;
+  base_folder_ = storage_options.uri;
+
+  open();
 }
 
-void SequentialReader::close()
+SequentialReader::~SequentialReader()
 {
   if (storage_) {
     storage_.reset();
   }
 }
 
-void SequentialReader::open(
-  const rosbag2_storage::StorageOptions & storage_options,
-  const ConverterOptions & converter_options)
+void SequentialReader::reopen()
 {
-  storage_options_ = storage_options;
-  base_folder_ = storage_options.uri;
-
-  // If there is a metadata.yaml file present, load it.
-  // If not, let's ask the storage with the given URI for its metadata.
-  // This is necessary for non ROS2 bags (aka ROS1 legacy bags).
-  if (metadata_io_->metadata_file_exists(storage_options.uri)) {
-    metadata_ = metadata_io_->read_metadata(storage_options.uri);
-    if (metadata_.relative_file_paths.empty()) {
-      ROSBAG2_CPP_LOG_WARN("No file paths were found in metadata.");
-      return;
-    }
-
-    file_paths_ = details::resolve_relative_paths(
-      storage_options.uri, metadata_.relative_file_paths, metadata_.version);
-    current_file_iterator_ = file_paths_.begin();
-
-    preprocess_current_file();
-
-    storage_options_.uri = get_current_file();
-    storage_ = storage_factory_->open_read_only(storage_options_);
-    if (!storage_) {
-      throw std::runtime_error{"No storage could be initialized. Abort"};
-    }
-  } else {
-    storage_ = storage_factory_->open_read_only(storage_options_);
-    if (!storage_) {
-      throw std::runtime_error{"No storage could be initialized. Abort"};
-    }
-    metadata_ = storage_->get_metadata();
-    if (metadata_.relative_file_paths.empty()) {
-      ROSBAG2_CPP_LOG_WARN("No file paths were found in metadata.");
-      return;
-    }
-    file_paths_ = metadata_.relative_file_paths;
-    current_file_iterator_ = file_paths_.begin();
-  }
-  auto topics = metadata_.topics_with_message_count;
-  if (topics.empty()) {
-    ROSBAG2_CPP_LOG_WARN("No topics were listed in metadata.");
-    return;
-  }
-  fill_topics_metadata();
-
-  // Currently a bag file can only be played if all topics have the same serialization format.
-  check_topics_serialization_formats(topics);
-  check_converter_serialization_format(
-    converter_options.output_serialization_format,
-    topics[0].topic_metadata.serialization_format);
+  // Calling open will cause all handles to be over-written, destructing the existing ones and thus
+  // closing them
+  open();
 }
 
 bool SequentialReader::has_next()
@@ -194,6 +149,56 @@ void SequentialReader::reset_filter()
   }
   throw std::runtime_error(
           "Bag is not open. Call open() before resetting filter.");
+}
+
+void SequentialReader::open()
+{
+  // If there is a metadata.yaml file present, load it.
+  // If not, let's ask the storage with the given URI for its metadata.
+  // This is necessary for non ROS2 bags (aka ROS1 legacy bags).
+  if (metadata_io_->metadata_file_exists(storage_options_.uri)) {
+    metadata_ = metadata_io_->read_metadata(storage_options_.uri);
+    if (metadata_.relative_file_paths.empty()) {
+      ROSBAG2_CPP_LOG_WARN("No file paths were found in metadata.");
+      return;
+    }
+
+    file_paths_ = details::resolve_relative_paths(
+      storage_options_.uri, metadata_.relative_file_paths, metadata_.version);
+    current_file_iterator_ = file_paths_.begin();
+
+    preprocess_current_file();
+
+    storage_options_.uri = get_current_file();
+    storage_ = storage_factory_->open_read_only(storage_options_);
+    if (!storage_) {
+      throw std::runtime_error{"No storage could be initialized. Abort"};
+    }
+  } else {
+    storage_ = storage_factory_->open_read_only(storage_options_);
+    if (!storage_) {
+      throw std::runtime_error{"No storage could be initialized. Abort"};
+    }
+    metadata_ = storage_->get_metadata();
+    if (metadata_.relative_file_paths.empty()) {
+      ROSBAG2_CPP_LOG_WARN("No file paths were found in metadata.");
+      return;
+    }
+    file_paths_ = metadata_.relative_file_paths;
+    current_file_iterator_ = file_paths_.begin();
+  }
+  auto topics = metadata_.topics_with_message_count;
+  if (topics.empty()) {
+    ROSBAG2_CPP_LOG_WARN("No topics were listed in metadata.");
+    return;
+  }
+  fill_topics_metadata();
+
+  // Currently a bag file can only be played if all topics have the same serialization format.
+  check_topics_serialization_formats(topics);
+  check_converter_serialization_format(
+    converter_options_.output_serialization_format,
+    topics[0].topic_metadata.serialization_format);
 }
 
 bool SequentialReader::has_next_file() const

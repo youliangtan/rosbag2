@@ -50,6 +50,8 @@ class ROSBAG2_COMPRESSION_PUBLIC SequentialCompressionReader
 {
 public:
   explicit SequentialCompressionReader(
+    const rosbag2_storage::StorageOptions & storage_options,
+    const rosbag2_cpp::ConverterOptions & converter_options,
     std::unique_ptr<rosbag2_compression::CompressionFactory> =
     std::make_unique<rosbag2_compression::CompressionFactory>(),
     std::unique_ptr<rosbag2_storage::StorageFactoryInterface> storage_factory =
@@ -61,9 +63,7 @@ public:
 
   virtual ~SequentialCompressionReader();
 
-  void open(
-    const rosbag2_storage::StorageOptions & storage_options,
-    const rosbag2_cpp::ConverterOptions & converter_options) override;
+  void reopen() override;
 
   std::shared_ptr<rosbag2_storage::SerializedBagMessage> read_next() override;
 

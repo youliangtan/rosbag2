@@ -19,12 +19,12 @@
 #define ROSBAG2_CPP__READERS__MERGED_READER_HPP_
 
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
 #include "rosbag2_cpp/converter.hpp"
 #include "rosbag2_cpp/reader_interfaces/base_reader_interface.hpp"
-#include "rosbag2_cpp/reader_interfaces/multiple_bag_opener_interface.hpp"
 #include "rosbag2_cpp/reader_interfaces/filtered_reader_interface.hpp"
 #include "rosbag2_cpp/visibility_control.hpp"
 
@@ -40,7 +40,7 @@ public:
   using ReaderImplPtr = std::shared_ptr<reader_interfaces::BaseReaderInterface>;
   using ReaderVector = std::vector<ReaderImplPtr>;
 
-  AggregateReader(ReaderVector & child_readers);
+  AggregateReader(ReaderVector && child_readers);
 
   virtual ~AggregateReader();
 

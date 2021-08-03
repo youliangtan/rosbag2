@@ -98,7 +98,9 @@ public:
     }
   }
 
-  std::unique_ptr<rosbag2_compression::SequentialCompressionReader> create_reader()
+  std::unique_ptr<rosbag2_compression::SequentialCompressionReader> create_reader(
+    rosbag2_storage::StorageOptions & storage_options,
+    rosbag2_cpp::ConverterOptions & converter_options)
   {
     auto decompressor = std::make_unique<NiceMock<MockDecompressor>>();
     ON_CALL(*decompressor, decompress_uri).WillByDefault(
@@ -111,6 +113,8 @@ public:
     ON_CALL(*compression_factory, create_decompressor(_))
     .WillByDefault(Return(ByMove(std::move(decompressor))));
     return std::make_unique<rosbag2_compression::SequentialCompressionReader>(
+      storage_options,
+      converter_options,
       std::move(compression_factory),
       std::move(storage_factory_),
       converter_factory_,
@@ -138,14 +142,14 @@ TEST_F(SequentialCompressionReaderTest, open_throws_if_unsupported_compressor)
   EXPECT_CALL(*metadata_io_, metadata_file_exists(_)).Times(AtLeast(1));
   auto compression_factory = std::make_unique<rosbag2_compression::CompressionFactory>();
 
-  auto sequential_reader = std::make_unique<rosbag2_compression::SequentialCompressionReader>(
-    std::move(compression_factory),
-    std::move(storage_factory_),
-    converter_factory_,
-    std::move(metadata_io_));
-
   EXPECT_THROW(
-    sequential_reader->open(storage_options_, converter_options_),
+    auto sequential_reader = std::make_unique<rosbag2_compression::SequentialCompressionReader>(
+      storage_options_,
+      converter_options_,
+      std::move(compression_factory),
+      std::move(storage_factory_),
+      converter_factory_,
+      std::move(metadata_io_)),
     rcpputils::IllegalStateException);
 }
 
@@ -160,12 +164,12 @@ TEST_F(SequentialCompressionReaderTest, returns_all_topics_and_types)
   EXPECT_CALL(*storage_factory_, open_read_only(_)).Times(1);
 
   auto compression_reader = std::make_unique<rosbag2_compression::SequentialCompressionReader>(
+    storage_options_,
+    converter_options_,
     std::move(compression_factory),
     std::move(storage_factory_),
     converter_factory_,
     std::move(metadata_io_));
-
-  compression_reader->open(storage_options_, converter_options_);
 
   auto topics_and_types = compression_reader->get_all_topics_and_types();
   EXPECT_FALSE(topics_and_types.empty());
@@ -175,14 +179,14 @@ TEST_F(SequentialCompressionReaderTest, compressor_factory_creates_callable_comp
 {
   auto compression_factory = std::make_unique<rosbag2_compression::CompressionFactory>();
 
-  auto sequential_reader = std::make_unique<rosbag2_compression::SequentialCompressionReader>(
-    std::move(compression_factory),
-    std::move(storage_factory_),
-    converter_factory_,
-    std::move(metadata_io_));
-
-  reader_ = std::make_unique<rosbag2_cpp::Reader>(std::move(sequential_reader));
-  EXPECT_NO_THROW(reader_->open(storage_options_, converter_options_));
+  EXPECT_NO_THROW(
+    auto sequential_reader = std::make_unique<rosbag2_compression::SequentialCompressionReader>(
+      storage_options_,
+      converter_options_,
+      std::move(compression_factory),
+      std::move(storage_factory_),
+      converter_factory_,
+      std::move(metadata_io_)));
 }
 
 TEST_F(SequentialCompressionReaderTest, reader_calls_create_decompressor)
@@ -198,13 +202,12 @@ TEST_F(SequentialCompressionReaderTest, reader_calls_create_decompressor)
   EXPECT_CALL(*storage_factory_, open_read_only(_)).Times(1);
 
   auto sequential_reader = std::make_unique<rosbag2_compression::SequentialCompressionReader>(
+    storage_options_,
+    converter_options_,
     std::move(compression_factory),
     std::move(storage_factory_),
     converter_factory_,
     std::move(metadata_io_));
-
-  reader_ = std::make_unique<rosbag2_cpp::Reader>(std::move(sequential_reader));
-  reader_->open(storage_options_, converter_options_);
 }
 
 TEST_F(SequentialCompressionReaderTest, compression_called_when_loading_split_bagfile)
@@ -231,12 +234,13 @@ TEST_F(SequentialCompressionReaderTest, compression_called_when_loading_split_ba
   .WillOnce(Return(true));  // We have a message from the new file
 
   auto compression_reader = std::make_unique<rosbag2_compression::SequentialCompressionReader>(
+    storage_options_,
+    converter_options_,
     std::move(compression_factory),
     std::move(storage_factory_),
     converter_factory_,
     std::move(metadata_io_));
 
-  compression_reader->open(storage_options_, converter_options_);
   EXPECT_EQ(compression_reader->has_next_file(), true);
   EXPECT_EQ(compression_reader->has_next(), true);
   compression_reader->read_next();
@@ -244,8 +248,7 @@ TEST_F(SequentialCompressionReaderTest, compression_called_when_loading_split_ba
 
 TEST_F(SequentialCompressionReaderTest, can_find_v4_names)
 {
-  auto reader = create_reader();
-  reader->open(storage_options_, converter_options_);
+  auto reader = create_reader(storage_options_, converter_options_);
   EXPECT_TRUE(reader->has_next_file());
 }
 
@@ -255,8 +258,9 @@ TEST_F(SequentialCompressionReaderTest, throws_on_incorrect_filenames)
     relative_file_path = (
       rcpputils::fs::path(bag_name_) / (relative_file_path + ".something")).string();
   }
-  auto reader = create_reader();
-  EXPECT_THROW(reader->open(storage_options_, converter_options_), std::invalid_argument);
+  EXPECT_THROW(
+    auto reader = create_reader(storage_options_, converter_options_),
+    std::invalid_argument);
 }
 
 TEST_F(SequentialCompressionReaderTest, can_find_prefixed_filenames)
@@ -265,9 +269,8 @@ TEST_F(SequentialCompressionReaderTest, can_find_prefixed_filenames)
   for (auto & relative_file_path : metadata_.relative_file_paths) {
     relative_file_path = (rcpputils::fs::path(bag_name_) / relative_file_path).string();
   }
-  auto reader = create_reader();
-
-  EXPECT_NO_THROW(reader->open(storage_options_, converter_options_));
+  std::unique_ptr<rosbag2_compression::SequentialCompressionReader> reader;
+  EXPECT_NO_THROW(reader = create_reader(storage_options_, converter_options_));
   EXPECT_TRUE(reader->has_next_file());
 }
 
@@ -279,8 +282,7 @@ TEST_F(SequentialCompressionReaderTest, can_find_prefixed_filenames_in_renamed_b
   for (auto & relative_file_path : metadata_.relative_file_paths) {
     relative_file_path = (rcpputils::fs::path("OtherBagName") / relative_file_path).string();
   }
-  auto reader = create_reader();
-
-  EXPECT_NO_THROW(reader->open(storage_options_, converter_options_));
+  std::unique_ptr<rosbag2_compression::SequentialCompressionReader> reader;
+  EXPECT_NO_THROW(reader = create_reader(storage_options_, converter_options_));
   EXPECT_TRUE(reader->has_next_file());
 }

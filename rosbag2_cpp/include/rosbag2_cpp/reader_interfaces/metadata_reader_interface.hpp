@@ -35,13 +35,9 @@ namespace rosbag2_cpp
 namespace reader_interfaces
 {
 
-class ROSBAG2_CPP_PUBLIC MetadataReaderInterface : public BaseReaderInterface
+class ROSBAG2_CPP_PUBLIC MetadataReaderInterface
 {
 public:
-  MetadataReaderInterface()
-    : BaseReaderInterface()
-  {}
-
   virtual ~MetadataReaderInterface() {}
 
   virtual const rosbag2_storage::BagMetadata & get_metadata() const = 0;

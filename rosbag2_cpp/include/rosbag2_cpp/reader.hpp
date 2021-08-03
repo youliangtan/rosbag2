@@ -55,8 +55,7 @@ class ROSBAG2_CPP_PUBLIC Reader final
 {
 public:
   explicit Reader(
-    std::unique_ptr<reader_interfaces::BaseReaderInterface> reader_impl =
-    std::make_unique<readers::SequentialReader>());
+    std::shared_ptr<reader_interfaces::BaseReaderInterface> reader_impl);
 
   ~Reader();
 
@@ -177,7 +176,7 @@ public:
   }
 
 private:
-  std::unique_ptr<reader_interfaces::BaseReaderInterface> reader_impl_;
+  std::shared_ptr<reader_interfaces::BaseReaderInterface> reader_impl_;
 };
 
 }  // namespace rosbag2_cpp

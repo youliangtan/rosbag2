@@ -88,14 +88,16 @@ Player::Player(
   const rosbag2_transport::PlayOptions & play_options,
   const std::string & node_name,
   const rclcpp::NodeOptions & node_options)
-: Player(std::make_unique<rosbag2_cpp::Reader>(),
-    storage_options, play_options,
-    node_name, node_options)
+: Player(std::make_unique<rosbag2_cpp::Reader>(
+      storage_options,
+      rosbag2_cpp::ConverterOptions{"", rmw_get_serialization_format()}),
+    play_options,
+    node_name,
+    node_options)
 {}
 
 Player::Player(
   std::unique_ptr<rosbag2_cpp::Reader> reader,
-  const rosbag2_storage::StorageOptions & storage_options,
   const rosbag2_transport::PlayOptions & play_options,
   const std::string & node_name,
   const rclcpp::NodeOptions & node_options)
@@ -103,11 +105,9 @@ Player::Player(
     node_name,
     rclcpp::NodeOptions(node_options).arguments(play_options.topic_remapping_options)),
   reader_(std::move(reader)),
-  storage_options_(storage_options),
   play_options_(play_options)
 {
   {
-    reader_->open(storage_options_, {"", rmw_get_serialization_format()});
     const auto starting_time = std::chrono::duration_cast<std::chrono::nanoseconds>(
       reader_->get_metadata().starting_time.time_since_epoch()).count();
     clock_ = std::make_unique<rosbag2_cpp::TimeControllerClock>(starting_time);
@@ -115,8 +115,6 @@ Player::Player(
 
     topic_qos_profile_overrides_ = play_options_.topic_qos_profile_overrides;
     prepare_publishers();
-
-    reader_->close();
   }
 
   srv_pause_ = create_service<rosbag2_interfaces::srv::Pause>(
@@ -186,14 +184,10 @@ Player::Player(
 
 Player::~Player()
 {
-  if (reader_) {
-    reader_->close();
-  }
 }
 
 rosbag2_cpp::Reader * Player::release_reader()
 {
-  reader_->close();
   return reader_.release();
 }
 
@@ -215,7 +209,6 @@ void Player::play()
   is_in_play_ = true;
   try {
     do {
-      reader_->open(storage_options_, {"", rmw_get_serialization_format()});
       const auto starting_time = std::chrono::duration_cast<std::chrono::nanoseconds>(
         reader_->get_metadata().starting_time.time_since_epoch()).count();
       clock_->jump(starting_time);
@@ -226,7 +219,6 @@ void Player::play()
 
       wait_for_filled_queue();
       play_messages_from_queue();
-      reader_->close();
     } while (rclcpp::ok() && play_options_.loop);
   } catch (std::runtime_error & e) {
     RCLCPP_ERROR(this->get_logger(), "Failed to play: %s", e.what());

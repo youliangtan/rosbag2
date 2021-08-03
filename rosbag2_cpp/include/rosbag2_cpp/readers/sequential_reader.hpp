@@ -21,7 +21,6 @@
 
 #include "rosbag2_cpp/converter.hpp"
 #include "rosbag2_cpp/reader_interfaces/base_reader_interface.hpp"
-#include "rosbag2_cpp/reader_interfaces/single_bag_opener_interface.hpp"
 #include "rosbag2_cpp/reader_interfaces/filtered_reader_interface.hpp"
 #include "rosbag2_cpp/reader_interfaces/metadata_reader_interface.hpp"
 #include "rosbag2_cpp/serialization_format_converter_factory.hpp"
@@ -49,7 +48,6 @@ namespace readers
 
 class ROSBAG2_CPP_PUBLIC SequentialReader
   : public ::rosbag2_cpp::reader_interfaces::BaseReaderInterface,
-    public ::rosbag2_cpp::reader_interfaces::SingleBagOpenerInterface,
     public ::rosbag2_cpp::reader_interfaces::MetadataReaderInterface,
     public ::rosbag2_cpp::reader_interfaces::FilteredReaderInterface
 {
@@ -99,6 +97,11 @@ public:
   virtual std::string get_current_uri() const;
 
 protected:
+  /**
+   * Open the bag file, closing any existing handles
+   */
+  void open();
+
   /**
   * Increment the current file iterator to point to the next file in the list of relative file
   * paths.
@@ -159,6 +162,7 @@ protected:
 private:
   rosbag2_storage::StorageOptions storage_options_;
   std::shared_ptr<SerializationFormatConverterFactoryInterface> converter_factory_{};
+  ConverterOptions converter_options_;
 };
 
 }  // namespace readers

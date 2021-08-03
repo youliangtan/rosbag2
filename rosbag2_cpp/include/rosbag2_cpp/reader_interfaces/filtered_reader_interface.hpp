@@ -35,13 +35,9 @@ namespace rosbag2_cpp
 namespace reader_interfaces
 {
 
-class ROSBAG2_CPP_PUBLIC FilteredReaderInterface : public BaseReaderInterface
+class ROSBAG2_CPP_PUBLIC FilteredReaderInterface
 {
 public:
-  FilteredReaderInterface()
-    : BaseReaderInterface()
-  {}
-
   virtual ~FilteredReaderInterface() {}
 
   virtual void set_filter(const rosbag2_storage::StorageFilter & storage_filter) = 0;

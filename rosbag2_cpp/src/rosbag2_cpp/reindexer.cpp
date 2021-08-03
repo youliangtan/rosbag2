@@ -161,7 +161,7 @@ void Reindexer::init_metadata(
  */
 void Reindexer::aggregate_metadata(
   const std::vector<rcpputils::fs::path> & files,
-  const std::unique_ptr<rosbag2_cpp::readers::SequentialReader> & bag_reader,
+  const std::shared_ptr<rosbag2_cpp::readers::SequentialReader> & bag_reader,
   const rosbag2_storage::StorageOptions & storage_options)
 {
   std::map<std::string, rosbag2_storage::TopicInformation> temp_topic_info;
@@ -242,7 +242,7 @@ void Reindexer::reindex(const rosbag2_storage::StorageOptions & storage_options)
   ROSBAG2_CPP_LOG_INFO_STREAM("Beginning reindexing bag in directory: " << base_folder_);
 
   auto metadata_io_default = std::make_unique<rosbag2_storage::MetadataIo>();
-  auto bag_reader = std::make_unique<rosbag2_cpp::readers::SequentialReader>(
+  auto bag_reader = std::make_shared<rosbag2_cpp::readers::SequentialReader>(
     std::move(storage_factory_), converter_factory_, std::move(metadata_io_default));
 
   // Identify all bag files

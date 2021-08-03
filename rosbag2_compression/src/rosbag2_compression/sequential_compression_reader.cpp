@@ -30,16 +30,31 @@
 namespace rosbag2_compression
 {
 SequentialCompressionReader::SequentialCompressionReader(
+  const rosbag2_storage::StorageOptions & storage_options,
+  const rosbag2_cpp::ConverterOptions & converter_options,
   std::unique_ptr<rosbag2_compression::CompressionFactory> compression_factory,
   std::unique_ptr<rosbag2_storage::StorageFactoryInterface> storage_factory,
   std::shared_ptr<rosbag2_cpp::SerializationFormatConverterFactoryInterface> converter_factory,
   std::unique_ptr<rosbag2_storage::MetadataIo> metadata_io)
-: SequentialReader(std::move(storage_factory), converter_factory, std::move(metadata_io)),
+: SequentialReader(storage_options, converter_options,
+    std::move(storage_factory), converter_factory, std::move(metadata_io)),
   compression_factory_{std::move(compression_factory)}
-{}
+{
+  if (!metadata_io_->metadata_file_exists(storage_options.uri)) {
+    std::stringstream errmsg;
+    errmsg << "Could not find metadata for bag: \"" << storage_options.uri <<
+      "\". Bags without metadata (such as from ROS 1) not supported by rosbag2 decompression.";
+    throw std::runtime_error{errmsg.str()};
+  }
+}
 
 SequentialCompressionReader::~SequentialCompressionReader()
 {}
+
+void SequentialCompressionReader::reopen()
+{
+  SequentialReader::reopen();
+}
 
 void SequentialCompressionReader::setup_decompression()
 {
@@ -87,19 +102,6 @@ void SequentialCompressionReader::preprocess_current_file()
     ROSBAG2_COMPRESSION_LOG_INFO_STREAM("Decompressing " << get_current_file().c_str());
     *current_file_iterator_ = decompressor_->decompress_uri(get_current_file());
   }
-}
-
-void SequentialCompressionReader::open(
-  const rosbag2_storage::StorageOptions & storage_options,
-  const rosbag2_cpp::ConverterOptions & converter_options)
-{
-  if (!metadata_io_->metadata_file_exists(storage_options.uri)) {
-    std::stringstream errmsg;
-    errmsg << "Could not find metadata for bag: \"" << storage_options.uri <<
-      "\". Bags without metadata (such as from ROS 1) not supported by rosbag2 decompression.";
-    throw std::runtime_error{errmsg.str()};
-  }
-  SequentialReader::open(storage_options, converter_options);
 }
 
 std::shared_ptr<rosbag2_storage::SerializedBagMessage> SequentialCompressionReader::read_next()

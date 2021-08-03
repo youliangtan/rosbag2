@@ -15,7 +15,10 @@
  *
 */
 
-#include "rosbag2_cpp/readers/merged_reader.hpp"
+#include "rosbag2_cpp/readers/aggregate_reader.hpp"
+
+#include <algorithm>
+#include <stdexcept>
 
 namespace rosbag2_cpp
 {
@@ -24,8 +27,8 @@ namespace readers
 
 AggregateReader::AggregateReader(ReaderVector && child_readers)
 {
-  for (auto&& r: reader_impls) {
-    readers_.push_back(ChildReader({std::move(r), std::nullopt}));
+  for (auto&& r: child_readers) {
+    readers_.emplace_back(ChildReader{std::move(r), std::nullopt});
   }
 }
 
@@ -47,7 +50,7 @@ bool AggregateReader::has_next()
   return has_next;
 }
 
-std::shared_ptr<rosbag2_storage::SerializedBagMessage> read_next()
+std::shared_ptr<rosbag2_storage::SerializedBagMessage> AggregateReader::read_next()
 {
   std::optional<size_t> earliest_index = std::nullopt;
   size_t current_index = 0;
@@ -77,8 +80,25 @@ std::shared_ptr<rosbag2_storage::SerializedBagMessage> read_next()
   }
 }
 
-std::vector<rosbag2_storage::TopicMetadata> get_all_topics_and_types()
+std::vector<rosbag2_storage::TopicMetadata> AggregateReader::get_all_topics_and_types() const
 {
+  std::vector<rosbag2_storage::TopicMetadata> result;
+  for (const auto& r: readers_) {
+    auto topic_metadata = r.reader->get_all_topics_and_types();
+    for (auto&& t: topic_metadata) {
+      auto existing_topic = std::find_if(
+        result.begin(),
+        result.end(),
+        [&t](auto topic){
+          return topic == t;
+        });
+      if (existing_topic == result.end()) {
+        result.emplace_back(std::move(t));
+      }
+      // Ignore already-listed topics
+    }
+  }
+  return result;
 }
 
 }  // namespace readers

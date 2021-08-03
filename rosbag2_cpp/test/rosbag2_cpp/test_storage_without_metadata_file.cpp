@@ -83,9 +83,9 @@ TEST_F(StorageWithoutMetadataFileTest, open_uses_storage_id_from_storage_options
   storage_options.storage_id = kStorageId;
 
   auto sequential_reader = std::make_unique<rosbag2_cpp::readers::SequentialReader>(
+    storage_options,
+    rosbag2_cpp::ConverterOptions{"", kRmwFormat},
     std::move(storage_factory),
     converter_factory_,
     std::move(metadata_io));
-
-  sequential_reader->open(storage_options, {"", kRmwFormat});
 }

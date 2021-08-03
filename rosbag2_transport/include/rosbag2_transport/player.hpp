@@ -70,7 +70,6 @@ public:
   ROSBAG2_TRANSPORT_PUBLIC
   Player(
     std::unique_ptr<rosbag2_cpp::Reader> reader,
-    const rosbag2_storage::StorageOptions & storage_options,
     const rosbag2_transport::PlayOptions & play_options,
     const std::string & node_name = "rosbag2_player",
     const rclcpp::NodeOptions & node_options = rclcpp::NodeOptions());
@@ -141,7 +140,6 @@ private:
   static const std::chrono::milliseconds queue_read_wait_period_;
 
   std::unique_ptr<rosbag2_cpp::Reader> reader_;
-  rosbag2_storage::StorageOptions storage_options_;
   rosbag2_transport::PlayOptions play_options_;
   moodycamel::ReaderWriterQueue<rosbag2_storage::SerializedBagMessageSharedPtr> message_queue_;
   mutable std::future<void> storage_loading_future_;
