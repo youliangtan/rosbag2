@@ -35,9 +35,8 @@ class MockPlayer : public rosbag2_transport::Player
 public:
   MockPlayer(
     std::unique_ptr<rosbag2_cpp::Reader> reader,
-    const rosbag2_storage::StorageOptions & storage_options,
     const rosbag2_transport::PlayOptions & play_options)
-  : Player(std::move(reader), storage_options, play_options)
+  : Player(std::move(reader), play_options)
   {}
 
   std::vector<rclcpp::PublisherBase *> get_list_of_publishers()
@@ -70,7 +69,7 @@ TEST_F(RosBag2PlayTestFixture, play_next_with_false_preconditions) {
   auto prepared_mock_reader = std::make_unique<MockSequentialReader>();
   prepared_mock_reader->prepare(messages, topic_types);
   auto reader = std::make_unique<rosbag2_cpp::Reader>(std::move(prepared_mock_reader));
-  auto player = std::make_shared<MockPlayer>(std::move(reader), storage_options_, play_options_);
+  auto player = std::make_shared<MockPlayer>(std::move(reader), play_options_);
 
   ASSERT_FALSE(player->is_paused());
   ASSERT_FALSE(player->play_next());
@@ -98,7 +97,7 @@ TEST_F(RosBag2PlayTestFixture, play_next_playing_all_messages_without_delays) {
   auto prepared_mock_reader = std::make_unique<MockSequentialReader>();
   prepared_mock_reader->prepare(messages, topic_types);
   auto reader = std::make_unique<rosbag2_cpp::Reader>(std::move(prepared_mock_reader));
-  auto player = std::make_shared<MockPlayer>(std::move(reader), storage_options_, play_options_);
+  auto player = std::make_shared<MockPlayer>(std::move(reader), play_options_);
 
   sub_ = std::make_shared<SubscriptionManager>();
   sub_->add_subscription<test_msgs::msg::BasicTypes>("/topic1", messages.size());
@@ -152,7 +151,7 @@ TEST_F(RosBag2PlayTestFixture, play_next_playing_one_by_one_messages_with_the_sa
   auto prepared_mock_reader = std::make_unique<MockSequentialReader>();
   prepared_mock_reader->prepare(messages, topic_types);
   auto reader = std::make_unique<rosbag2_cpp::Reader>(std::move(prepared_mock_reader));
-  auto player = std::make_shared<MockPlayer>(std::move(reader), storage_options_, play_options_);
+  auto player = std::make_shared<MockPlayer>(std::move(reader), play_options_);
 
   sub_ = std::make_shared<SubscriptionManager>();
   sub_->add_subscription<test_msgs::msg::BasicTypes>("/topic1", messages.size());
@@ -206,7 +205,7 @@ TEST_F(RosBag2PlayTestFixture, play_respect_messages_timing_after_play_next) {
   auto prepared_mock_reader = std::make_unique<MockSequentialReader>();
   prepared_mock_reader->prepare(messages, topic_types);
   auto reader = std::make_unique<rosbag2_cpp::Reader>(std::move(prepared_mock_reader));
-  auto player = std::make_shared<MockPlayer>(std::move(reader), storage_options_, play_options_);
+  auto player = std::make_shared<MockPlayer>(std::move(reader), play_options_);
 
   sub_ = std::make_shared<SubscriptionManager>();
   sub_->add_subscription<test_msgs::msg::BasicTypes>("/topic1", messages.size());
@@ -261,7 +260,7 @@ TEST_F(RosBag2PlayTestFixture, player_can_resume_after_play_next) {
   auto prepared_mock_reader = std::make_unique<MockSequentialReader>();
   prepared_mock_reader->prepare(messages, topic_types);
   auto reader = std::make_unique<rosbag2_cpp::Reader>(std::move(prepared_mock_reader));
-  auto player = std::make_shared<MockPlayer>(std::move(reader), storage_options_, play_options_);
+  auto player = std::make_shared<MockPlayer>(std::move(reader), play_options_);
 
   sub_ = std::make_shared<SubscriptionManager>();
   sub_->add_subscription<test_msgs::msg::BasicTypes>("/topic1", messages.size());
@@ -317,7 +316,7 @@ TEST_F(RosBag2PlayTestFixture, play_next_playing_only_filtered_topics) {
   auto prepared_mock_reader = std::make_unique<MockSequentialReader>();
   prepared_mock_reader->prepare(messages, topic_types);
   auto reader = std::make_unique<rosbag2_cpp::Reader>(std::move(prepared_mock_reader));
-  auto player = std::make_shared<MockPlayer>(std::move(reader), storage_options_, play_options_);
+  auto player = std::make_shared<MockPlayer>(std::move(reader), play_options_);
 
   sub_ = std::make_shared<SubscriptionManager>();
   sub_->add_subscription<test_msgs::msg::BasicTypes>("/topic1", 0);

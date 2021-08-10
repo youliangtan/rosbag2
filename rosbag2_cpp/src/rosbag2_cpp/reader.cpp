@@ -30,6 +30,16 @@ Reader::Reader(std::shared_ptr<reader_interfaces::BaseReaderInterface> reader_im
 : reader_impl_(std::move(reader_impl))
 {}
 
+Reader::Reader(const std::string & uri)
+{
+  rosbag2_storage::StorageOptions storage_options;
+  storage_options.uri = uri;
+  storage_options.storage_id = "sqlite3";
+
+  rosbag2_cpp::ConverterOptions converter_options{};
+  reader_impl_ = std::make_shared<readers::SequentialReader>(storage_options, converter_options);
+}
+
 Reader::~Reader()
 {
   // Do nothing; the held reader will close itself when it destructs

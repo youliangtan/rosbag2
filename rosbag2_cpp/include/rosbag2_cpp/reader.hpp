@@ -57,6 +57,8 @@ public:
   explicit Reader(
     std::shared_ptr<reader_interfaces::BaseReaderInterface> reader_impl);
 
+  explicit Reader(const std::string & uri);
+
   ~Reader();
 
   void reopen();

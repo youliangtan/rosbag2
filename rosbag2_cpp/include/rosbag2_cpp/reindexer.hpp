@@ -74,10 +74,10 @@ class ROSBAG2_CPP_PUBLIC Reindexer
 {
 public:
   Reindexer(
-    std::unique_ptr<rosbag2_storage::StorageFactoryInterface> storage_factory =
-    std::make_unique<rosbag2_storage::StorageFactory>(),
-    std::unique_ptr<rosbag2_storage::MetadataIo> metadata_io =
-    std::make_unique<rosbag2_storage::MetadataIo>());
+    std::shared_ptr<rosbag2_storage::StorageFactoryInterface> storage_factory =
+    std::make_shared<rosbag2_storage::StorageFactory>(),
+    std::shared_ptr<rosbag2_storage::MetadataIo> metadata_io =
+    std::make_shared<rosbag2_storage::MetadataIo>());
 
   virtual ~Reindexer() = default;
 
@@ -88,8 +88,8 @@ public:
   void reindex(const rosbag2_storage::StorageOptions & storage_options);
 
 protected:
-  std::unique_ptr<rosbag2_storage::StorageFactoryInterface> storage_factory_{};
-  std::unique_ptr<rosbag2_storage::MetadataIo> metadata_io_{};
+  std::shared_ptr<rosbag2_storage::StorageFactoryInterface> storage_factory_{};
+  std::shared_ptr<rosbag2_storage::MetadataIo> metadata_io_{};
   rosbag2_storage::BagMetadata metadata_{};
   std::vector<rosbag2_storage::TopicMetadata> topics_metadata_{};
 
@@ -109,7 +109,6 @@ private:
   // Attempts to harvest metadata from all bag files, and aggregates the result
   void aggregate_metadata(
     const std::vector<rcpputils::fs::path> & files,
-    const std::shared_ptr<rosbag2_cpp::readers::SequentialReader> & bag_reader,
     const rosbag2_storage::StorageOptions & storage_options);
 
   // Comparison function for std::sort with our filepath convention

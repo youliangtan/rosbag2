@@ -143,7 +143,6 @@ private:
   /// Create a player with some messages to play back, and start it on loop
   void setup_player()
   {
-    rosbag2_storage::StorageOptions storage_options;
     rosbag2_transport::PlayOptions play_options;
     play_options.loop = true;
 
@@ -162,7 +161,7 @@ private:
     prepared_mock_reader->prepare(messages, topic_types);
     auto reader = std::make_unique<rosbag2_cpp::Reader>(std::move(prepared_mock_reader));
     player_ = std::make_shared<rosbag2_transport::Player>(
-      std::move(reader), storage_options, play_options, player_name_);
+      std::move(reader), play_options, player_name_);
     player_->pause();  // Start playing in pause mode. Require for play_next test. For all other
     // tests we will resume playback via explicit call to start_playback().
     play_thread_ = std::thread(

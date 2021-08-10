@@ -21,20 +21,19 @@
 #include <vector>
 
 #include "rosbag2_cpp/reader_interfaces/base_reader_interface.hpp"
+#include "rosbag2_cpp/reader_interfaces/filtered_reader_interface.hpp"
+#include "rosbag2_cpp/reader_interfaces/metadata_reader_interface.hpp"
 
-class MockSequentialReader : public rosbag2_cpp::reader_interfaces::BaseReaderInterface
+class MockSequentialReader
+  : public rosbag2_cpp::reader_interfaces::BaseReaderInterface,
+    public ::rosbag2_cpp::reader_interfaces::MetadataReaderInterface,
+    public ::rosbag2_cpp::reader_interfaces::FilteredReaderInterface
 {
 public:
-  void open(
-    const rosbag2_storage::StorageOptions & storage_options,
-    const rosbag2_cpp::ConverterOptions & converter_options) override
+  void reopen() override
   {
-    (void) storage_options;
-    (void) converter_options;
     num_read_ = 0;
   }
-
-  void close() override {}
 
   bool has_next() override
   {

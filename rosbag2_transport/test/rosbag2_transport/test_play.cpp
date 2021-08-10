@@ -75,9 +75,7 @@ TEST_F(RosBag2PlayTestFixture, recorded_messages_are_played_for_all_topics)
 
   auto await_received_messages = sub_->spin_subscriptions();
 
-  auto player = std::make_shared<rosbag2_transport::Player>(
-    std::move(
-      reader), storage_options_, play_options_);
+  auto player = std::make_shared<rosbag2_transport::Player>(std::move(reader), play_options_);
   player->play();
 
   await_received_messages.get();
@@ -146,9 +144,7 @@ TEST_F(RosBag2PlayTestFixture, recorded_messages_are_played_for_all_topics_with_
 
   auto await_received_messages = sub_->spin_subscriptions();
 
-  auto player = std::make_shared<rosbag2_transport::Player>(
-    std::move(
-      reader), storage_options_, play_options_);
+  auto player = std::make_shared<rosbag2_transport::Player>(std::move(reader), play_options_);
   player->play();
 
   await_received_messages.get();
@@ -218,9 +214,7 @@ TEST_F(RosBag2PlayTestFixture, recorded_messages_are_played_for_filtered_topics)
 
     auto await_received_messages = sub_->spin_subscriptions();
 
-    auto player = std::make_shared<rosbag2_transport::Player>(
-      std::move(
-        reader), storage_options_, play_options_);
+    auto player = std::make_shared<rosbag2_transport::Player>(std::move(reader), play_options_);
     player->play();
 
     await_received_messages.get();
@@ -251,9 +245,7 @@ TEST_F(RosBag2PlayTestFixture, recorded_messages_are_played_for_filtered_topics)
 
     auto await_received_messages = sub_->spin_subscriptions();
 
-    auto player = std::make_shared<rosbag2_transport::Player>(
-      std::move(
-        reader), storage_options_, play_options_);
+    auto player = std::make_shared<rosbag2_transport::Player>(std::move(reader), play_options_);
     player->play();
 
     await_received_messages.get();
@@ -284,9 +276,7 @@ TEST_F(RosBag2PlayTestFixture, recorded_messages_are_played_for_filtered_topics)
 
     auto await_received_messages = sub_->spin_subscriptions();
 
-    auto player = std::make_shared<rosbag2_transport::Player>(
-      std::move(
-        reader), storage_options_, play_options_);
+    auto player = std::make_shared<rosbag2_transport::Player>(std::move(reader), play_options_);
     player->play();
 
     await_received_messages.get();
@@ -341,9 +331,7 @@ TEST_F(RosBag2PlayTestFixture, recorded_messages_are_played_for_filtered_topics_
     sub_->add_subscription<test_msgs::msg::Arrays>("/topic2", 2);
     auto await_received_messages = sub_->spin_subscriptions();
 
-    auto player = std::make_shared<rosbag2_transport::Player>(
-      std::move(
-        reader), storage_options_, play_options_);
+    auto player = std::make_shared<rosbag2_transport::Player>(std::move(reader), play_options_);
     player->play();
 
     await_received_messages.get();
@@ -371,9 +359,7 @@ TEST_F(RosBag2PlayTestFixture, recorded_messages_are_played_for_filtered_topics_
 
     auto await_received_messages = sub_->spin_subscriptions();
 
-    auto player = std::make_shared<rosbag2_transport::Player>(
-      std::move(
-        reader), storage_options_, play_options_);
+    auto player = std::make_shared<rosbag2_transport::Player>(std::move(reader), play_options_);
     player->play();
 
     await_received_messages.get();
@@ -402,9 +388,7 @@ TEST_F(RosBag2PlayTestFixture, recorded_messages_are_played_for_filtered_topics_
 
     auto await_received_messages = sub_->spin_subscriptions();
 
-    auto player = std::make_shared<rosbag2_transport::Player>(
-      std::move(
-        reader), storage_options_, play_options_);
+    auto player = std::make_shared<rosbag2_transport::Player>(std::move(reader), play_options_);
     player->play();
 
     await_received_messages.get();
@@ -459,9 +443,7 @@ public:
     auto reader = std::make_unique<rosbag2_cpp::Reader>(std::move(prepared_mock_reader));
 
     auto await_received_messages = sub_->spin_subscriptions();
-    auto player = std::make_shared<rosbag2_transport::Player>(
-      std::move(
-        reader), storage_options_, play_options_);
+    auto player = std::make_shared<rosbag2_transport::Player>(std::move(reader), play_options_);
     player->play();
     const auto result = await_received_messages.wait_for(timeout);
     // Must EXPECT, can't ASSERT because transport needs to be shutdown if timed out

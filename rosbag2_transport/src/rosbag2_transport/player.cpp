@@ -89,8 +89,9 @@ Player::Player(
   const std::string & node_name,
   const rclcpp::NodeOptions & node_options)
 : Player(std::make_unique<rosbag2_cpp::Reader>(
-      storage_options,
-      rosbag2_cpp::ConverterOptions{"", rmw_get_serialization_format()}),
+      std::make_shared<rosbag2_cpp::readers::SequentialReader>(
+        storage_options,
+        rosbag2_cpp::ConverterOptions{"", rmw_get_serialization_format()})),
     play_options,
     node_name,
     node_options)

@@ -55,12 +55,12 @@ public:
   SequentialReader(
     const rosbag2_storage::StorageOptions & storage_options,
     const ConverterOptions & converter_options,
-    std::unique_ptr<rosbag2_storage::StorageFactoryInterface> storage_factory =
-    std::make_unique<rosbag2_storage::StorageFactory>(),
+    std::shared_ptr<rosbag2_storage::StorageFactoryInterface> storage_factory =
+    std::make_shared<rosbag2_storage::StorageFactory>(),
     std::shared_ptr<SerializationFormatConverterFactoryInterface> converter_factory =
     std::make_shared<SerializationFormatConverterFactory>(),
-    std::unique_ptr<rosbag2_storage::MetadataIo> metadata_io =
-    std::make_unique<rosbag2_storage::MetadataIo>());
+    std::shared_ptr<rosbag2_storage::MetadataIo> metadata_io =
+    std::make_shared<rosbag2_storage::MetadataIo>());
 
   virtual ~SequentialReader();
 
@@ -146,10 +146,10 @@ protected:
     */
   virtual void preprocess_current_file() {}
 
-  std::unique_ptr<rosbag2_storage::StorageFactoryInterface> storage_factory_{};
+  std::shared_ptr<rosbag2_storage::StorageFactoryInterface> storage_factory_{};
   std::shared_ptr<rosbag2_storage::storage_interfaces::ReadOnlyInterface> storage_{};
-  std::unique_ptr<Converter> converter_{};
-  std::unique_ptr<rosbag2_storage::MetadataIo> metadata_io_{};
+  std::shared_ptr<Converter> converter_{};
+  std::shared_ptr<rosbag2_storage::MetadataIo> metadata_io_{};
   rosbag2_storage::BagMetadata metadata_{};
   rosbag2_storage::StorageFilter topics_filter_{};
   std::vector<rosbag2_storage::TopicMetadata> topics_metadata_{};

@@ -44,8 +44,8 @@
 namespace rosbag2_cpp
 {
 Reindexer::Reindexer(
-  std::unique_ptr<rosbag2_storage::StorageFactoryInterface> storage_factory,
-  std::unique_ptr<rosbag2_storage::MetadataIo> metadata_io)
+  std::shared_ptr<rosbag2_storage::StorageFactoryInterface> storage_factory,
+  std::shared_ptr<rosbag2_storage::MetadataIo> metadata_io)
 : storage_factory_(std::move(storage_factory)),
   metadata_io_(std::move(metadata_io))
 {
@@ -161,7 +161,6 @@ void Reindexer::init_metadata(
  */
 void Reindexer::aggregate_metadata(
   const std::vector<rcpputils::fs::path> & files,
-  const std::shared_ptr<rosbag2_cpp::readers::SequentialReader> & bag_reader,
   const rosbag2_storage::StorageOptions & storage_options)
 {
   std::map<std::string, rosbag2_storage::TopicInformation> temp_topic_info;
@@ -187,7 +186,13 @@ void Reindexer::aggregate_metadata(
 
     // We aren't actually interested in reading messages, so use a blank converter option
     rosbag2_cpp::ConverterOptions blank_converter_options {};
-    bag_reader->open(temp_so, blank_converter_options);
+    auto metadata_io_default = std::make_shared<rosbag2_storage::MetadataIo>();
+    auto bag_reader = std::make_shared<rosbag2_cpp::readers::SequentialReader>(
+      temp_so,
+      blank_converter_options,
+      storage_factory_,
+      converter_factory_,
+      std::move(metadata_io_default));
     auto temp_metadata = bag_reader->get_metadata();
 
     if (temp_metadata.starting_time < metadata_.starting_time) {
@@ -220,8 +225,6 @@ void Reindexer::aggregate_metadata(
         }
       }
     }
-
-    bag_reader->close();
   }
 
   // Convert the topic map into topic metadata
@@ -241,10 +244,6 @@ void Reindexer::reindex(const rosbag2_storage::StorageOptions & storage_options)
   base_folder_ = storage_options.uri;
   ROSBAG2_CPP_LOG_INFO_STREAM("Beginning reindexing bag in directory: " << base_folder_);
 
-  auto metadata_io_default = std::make_unique<rosbag2_storage::MetadataIo>();
-  auto bag_reader = std::make_shared<rosbag2_cpp::readers::SequentialReader>(
-    std::move(storage_factory_), converter_factory_, std::move(metadata_io_default));
-
   // Identify all bag files
   std::vector<rcpputils::fs::path> files;
   get_bag_files(base_folder_, files);
@@ -256,7 +255,7 @@ void Reindexer::reindex(const rosbag2_storage::StorageOptions & storage_options)
   ROSBAG2_CPP_LOG_DEBUG_STREAM("Completed init_metadata");
 
   // Collect all metadata from database files
-  aggregate_metadata(files, bag_reader, storage_options);
+  aggregate_metadata(files, storage_options);
   ROSBAG2_CPP_LOG_DEBUG_STREAM("Completed aggregate_metadata");
 
   metadata_io_->write_metadata(base_folder_.string(), metadata_);

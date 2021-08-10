@@ -66,9 +66,7 @@ public:
 
     auto await_received_messages = sub_->spin_subscriptions();
 
-    auto player = std::make_shared<rosbag2_transport::Player>(
-      std::move(
-        reader), storage_options_, play_options_);
+    auto player = std::make_shared<rosbag2_transport::Player>(std::move(reader), play_options_);
     rclcpp::executors::SingleThreadedExecutor exec;
     exec.add_node(player);
     auto spin_thread = std::thread(

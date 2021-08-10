@@ -60,9 +60,9 @@ std::vector<std::string> resolve_relative_paths(
 SequentialReader::SequentialReader(
   const rosbag2_storage::StorageOptions & storage_options,
   const ConverterOptions & converter_options,
-  std::unique_ptr<rosbag2_storage::StorageFactoryInterface> storage_factory,
+  std::shared_ptr<rosbag2_storage::StorageFactoryInterface> storage_factory,
   std::shared_ptr<SerializationFormatConverterFactoryInterface> converter_factory,
-  std::unique_ptr<rosbag2_storage::MetadataIo> metadata_io)
+  std::shared_ptr<rosbag2_storage::MetadataIo> metadata_io)
 : storage_factory_(std::move(storage_factory)),
   converter_(nullptr),
   metadata_io_(std::move(metadata_io)),
@@ -245,7 +245,7 @@ void SequentialReader::check_converter_serialization_format(
   if (converter_serialization_format.empty()) {return;}
 
   if (converter_serialization_format != storage_serialization_format) {
-    converter_ = std::make_unique<Converter>(
+    converter_ = std::make_shared<Converter>(
       storage_serialization_format,
       converter_serialization_format,
       converter_factory_);

@@ -87,8 +87,7 @@ TEST(TestRosbag2CPPAPI, minimal_writer_example)
   }
 
   {
-    rosbag2_cpp::Reader reader;
-    reader.open(rosbag_directory.string());
+    rosbag2_cpp::Reader reader(rosbag_directory.string());
     std::vector<std::string> topics;
     while (reader.has_next()) {
       auto bag_message = reader.read_next();
@@ -112,8 +111,7 @@ TEST(TestRosbag2CPPAPI, minimal_writer_example)
 
   // alternative reader
   {
-    rosbag2_cpp::Reader reader;
-    reader.open(rosbag_directory.string());
+    rosbag2_cpp::Reader reader(rosbag_directory.string());
     while (reader.has_next()) {
       TestMsgT extracted_test_msg = reader.read_next<TestMsgT>();
       EXPECT_EQ(test_msg, extracted_test_msg);
