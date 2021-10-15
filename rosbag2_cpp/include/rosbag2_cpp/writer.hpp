@@ -174,6 +174,8 @@ public:
     return *writer_impl_;
   }
 
+  void add_event_callback(BagEventCallback && callback);
+
 private:
   std::mutex writer_mutex_;
   std::unique_ptr<rosbag2_cpp::writer_interfaces::BaseWriterInterface> writer_impl_;

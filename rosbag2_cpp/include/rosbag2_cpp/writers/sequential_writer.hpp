@@ -106,6 +106,8 @@ public:
    */
   void write(std::shared_ptr<rosbag2_storage::SerializedBagMessage> message) override;
 
+  void add_event_callback(BagEventCallback & callback) override;
+
 protected:
   std::string base_folder_;
   std::unique_ptr<rosbag2_storage::StorageFactoryInterface> storage_factory_;
@@ -153,6 +155,10 @@ protected:
   virtual std::shared_ptr<rosbag2_storage::SerializedBagMessage>
   get_writeable_message(
     std::shared_ptr<rosbag2_storage::SerializedBagMessage> message);
+
+  std::vector<BagEventCallback> event_callbacks;
+
+  void call_event_callbacks(BagEvent event);
 };
 
 }  // namespace writers

@@ -17,6 +17,7 @@
 
 #include <memory>
 
+#include "rosbag2_cpp/bag_events.hpp"
 #include "rosbag2_cpp/converter_options.hpp"
 #include "rosbag2_cpp/visibility_control.hpp"
 
@@ -45,6 +46,8 @@ public:
   virtual void remove_topic(const rosbag2_storage::TopicMetadata & topic_with_type) = 0;
 
   virtual void write(std::shared_ptr<rosbag2_storage::SerializedBagMessage> message) = 0;
+
+  virtual void add_event_callback(BagEventCallback & callback) = 0;
 };
 
 }  // namespace writer_interfaces
