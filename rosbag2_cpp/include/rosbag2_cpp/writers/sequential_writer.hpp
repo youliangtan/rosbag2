@@ -114,6 +114,8 @@ public:
    */
   bool take_snapshot() override;
 
+  void add_event_callback(BagEventCallback & callback) override;
+
 protected:
   std::string base_folder_;
   std::unique_ptr<rosbag2_storage::StorageFactoryInterface> storage_factory_;
@@ -157,11 +159,19 @@ protected:
   virtual std::shared_ptr<rosbag2_storage::SerializedBagMessage>
   get_writeable_message(
     std::shared_ptr<rosbag2_storage::SerializedBagMessage> message);
+<<<<<<< HEAD
 
 private:
   /// Helper method to write messages while also updating tracked metadata.
   void write_messages(
     const std::vector<std::shared_ptr<const rosbag2_storage::SerializedBagMessage>> & messages);
+||||||| parent of 3223864 (Simple hacky prototype)
+=======
+
+  std::vector<BagEventCallback> event_callbacks;
+
+  void call_event_callbacks(BagEvent event);
+>>>>>>> 3223864 (Simple hacky prototype)
 };
 
 }  // namespace writers
