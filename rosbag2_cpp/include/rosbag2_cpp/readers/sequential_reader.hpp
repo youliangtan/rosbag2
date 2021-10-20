@@ -19,6 +19,7 @@
 #include <string>
 #include <vector>
 
+#include "rosbag2_cpp/bag_events.hpp"
 #include "rosbag2_cpp/converter.hpp"
 #include "rosbag2_cpp/reader_interfaces/base_reader_interface.hpp"
 #include "rosbag2_cpp/serialization_format_converter_factory.hpp"
@@ -94,6 +95,13 @@ public:
   */
   virtual std::string get_current_uri() const;
 
+  /**
+   * Add callbacks for events that may occur during bag reading.
+   *
+   * \param callbacks the structure containing the callback to add for each event.
+   */
+  virtual void add_event_callbacks(bag_events::ReaderEventCallbacks & callbacks) override;
+
 protected:
   /**
   * Increment the current file iterator to point to the next file in the list of relative file
@@ -155,6 +163,8 @@ protected:
 private:
   rosbag2_storage::StorageOptions storage_options_;
   std::shared_ptr<SerializationFormatConverterFactoryInterface> converter_factory_{};
+
+  bag_events::EventCallbackManager callback_manager_;
 };
 
 }  // namespace readers

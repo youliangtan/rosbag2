@@ -47,7 +47,7 @@ public:
 
   virtual void write(std::shared_ptr<rosbag2_storage::SerializedBagMessage> message) = 0;
 
-  virtual void add_event_callback(BagEventCallback & callback) = 0;
+  virtual void add_event_callbacks(bag_events::WriterEventCallbacks & callbacks) = 0;
 };
 
 }  // namespace writer_interfaces

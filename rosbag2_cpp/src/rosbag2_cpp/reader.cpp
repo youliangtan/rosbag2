@@ -87,4 +87,9 @@ void Reader::reset_filter()
   reader_impl_->reset_filter();
 }
 
+void Reader::add_event_callbacks(bag_events::ReaderEventCallbacks & callbacks)
+{
+  reader_impl_->add_event_callbacks(callbacks);
+}
+
 }  // namespace rosbag2_cpp

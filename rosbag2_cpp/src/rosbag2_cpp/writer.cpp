@@ -122,9 +122,9 @@ void Writer::write(
     serialized_bag_message, topic_name, type_name, rmw_get_serialization_format());
 }
 
-void Writer::add_event_callback(BagEventCallback && callback)
+void Writer::add_event_callbacks(bag_events::WriterEventCallbacks & callbacks)
 {
-  writer_impl_->add_event_callback(callback);
+  writer_impl_->add_event_callbacks(callbacks);
 }
 
 }  // namespace rosbag2_cpp

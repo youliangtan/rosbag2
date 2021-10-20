@@ -23,12 +23,12 @@
 #include <utility>
 #include <vector>
 
-#include "example_interfaces/msg/empty.hpp"
-
 #include "rclcpp/node.hpp"
 #include "rclcpp/qos.hpp"
 
 #include "rosbag2_cpp/writer.hpp"
+
+#include "rosbag2_interfaces/msg/output_file_split_event.hpp"
 
 #include "rosbag2_storage/topic_metadata.hpp"
 
@@ -124,7 +124,7 @@ private:
   std::unordered_map<std::string, rclcpp::QoS> topic_qos_profile_overrides_;
   std::unordered_set<std::string> topic_unknown_types_;
 
-  rclcpp::Publisher<example_interfaces::msg::Empty>::SharedPtr event_pub_;
+  rclcpp::Publisher<rosbag2_interfaces::msg::OutputFileSplitEvent>::SharedPtr split_event_pub_;
 };
 
 }  // namespace rosbag2_transport

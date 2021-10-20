@@ -18,6 +18,7 @@
 #include <memory>
 #include <vector>
 
+#include "rosbag2_cpp/bag_events.hpp"
 #include "rosbag2_cpp/converter_options.hpp"
 #include "rosbag2_cpp/visibility_control.hpp"
 
@@ -54,6 +55,8 @@ public:
   virtual void set_filter(const rosbag2_storage::StorageFilter & storage_filter) = 0;
 
   virtual void reset_filter() = 0;
+
+  virtual void add_event_callbacks(bag_events::ReaderEventCallbacks & callbacks) = 0;
 };
 
 }  // namespace reader_interfaces
