@@ -21,6 +21,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "rosbag2_cpp/bag_events.hpp"
 #include "rosbag2_cpp/cache/cache_consumer.hpp"
 #include "rosbag2_cpp/cache/circular_message_cache.hpp"
 #include "rosbag2_cpp/cache/message_cache.hpp"
@@ -114,7 +115,12 @@ public:
    */
   bool take_snapshot() override;
 
-  void add_event_callback(BagEventCallback & callback) override;
+  /**
+   * Add callbacks for events that may occur during bag writing.
+   *
+   * \param callbacks the structure containing the callback to add for each event.
+   */
+  void add_event_callbacks(bag_events::WriterEventCallbacks & callbacks) override;
 
 protected:
   std::string base_folder_;
@@ -168,10 +174,18 @@ private:
 ||||||| parent of 3223864 (Simple hacky prototype)
 =======
 
+<<<<<<< HEAD
   std::vector<BagEventCallback> event_callbacks;
 
   void call_event_callbacks(BagEvent event);
 >>>>>>> 3223864 (Simple hacky prototype)
+||||||| parent of 0699545 (Improved prototype with more flexibility and event information)
+  std::vector<BagEventCallback> event_callbacks;
+
+  void call_event_callbacks(BagEvent event);
+=======
+  bag_events::EventCallbackManager callback_manager_;
+>>>>>>> 0699545 (Improved prototype with more flexibility and event information)
 };
 
 }  // namespace writers

@@ -32,6 +32,7 @@
 #include "rclcpp/qos.hpp"
 
 #include "rosbag2_cpp/clocks/player_clock.hpp"
+#include "rosbag2_interfaces/msg/input_file_split_event.hpp"
 #include "rosbag2_interfaces/srv/get_rate.hpp"
 #include "rosbag2_interfaces/srv/is_paused.hpp"
 #include "rosbag2_interfaces/srv/pause.hpp"
@@ -194,6 +195,8 @@ private:
   rclcpp::Service<rosbag2_interfaces::srv::SetRate>::SharedPtr srv_set_rate_;
   rclcpp::Service<rosbag2_interfaces::srv::PlayNext>::SharedPtr srv_play_next_;
   rclcpp::Service<rosbag2_interfaces::srv::Seek>::SharedPtr srv_seek_;
+
+  rclcpp::Publisher<rosbag2_interfaces::msg::InputFileSplitEvent>::SharedPtr split_event_pub_;
 
   // defaults
   std::shared_ptr<KeyboardHandler> keyboard_handler_;
