@@ -165,27 +165,13 @@ protected:
   virtual std::shared_ptr<rosbag2_storage::SerializedBagMessage>
   get_writeable_message(
     std::shared_ptr<rosbag2_storage::SerializedBagMessage> message);
-<<<<<<< HEAD
 
 private:
   /// Helper method to write messages while also updating tracked metadata.
   void write_messages(
     const std::vector<std::shared_ptr<const rosbag2_storage::SerializedBagMessage>> & messages);
-||||||| parent of 3223864 (Simple hacky prototype)
-=======
 
-<<<<<<< HEAD
-  std::vector<BagEventCallback> event_callbacks;
-
-  void call_event_callbacks(BagEvent event);
->>>>>>> 3223864 (Simple hacky prototype)
-||||||| parent of 0699545 (Improved prototype with more flexibility and event information)
-  std::vector<BagEventCallback> event_callbacks;
-
-  void call_event_callbacks(BagEvent event);
-=======
   bag_events::EventCallbackManager callback_manager_;
->>>>>>> 0699545 (Improved prototype with more flexibility and event information)
 };
 
 }  // namespace writers
