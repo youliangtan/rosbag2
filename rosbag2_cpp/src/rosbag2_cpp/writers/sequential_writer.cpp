@@ -410,7 +410,7 @@ void SequentialWriter::write_messages(
   }
 }
 
-void SequentialWriter::add_event_callbacks(bag_events::WriterEventCallbacks & callbacks)
+void SequentialWriter::add_event_callbacks(const bag_events::WriterEventCallbacks & callbacks)
 {
   if (callbacks.write_split_callback) {
     callback_manager_.add_event_callback(
