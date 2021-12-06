@@ -171,7 +171,7 @@ void Recorder::record()
 
 void Recorder::event_publisher_thread_main()
 {
-  RCLCPP_INFO(get_logger(), "Event publisher threaad: Starting");
+  RCLCPP_INFO(get_logger(), "Event publisher thread: Starting");
 
   bool should_exit = false;
 
