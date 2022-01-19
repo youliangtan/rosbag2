@@ -16,8 +16,8 @@
 #include <string>
 #include <vector>
 
-#include "rosbag2_transport/qos.hpp"
-#include "rosbag2_transport/record_options.hpp"
+#include "rosbag2_transport_backport/qos.hpp"
+#include "rosbag2_transport_backport/record_options.hpp"
 
 namespace YAML
 {

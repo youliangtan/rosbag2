@@ -22,15 +22,15 @@
 
 #include "rclcpp/rclcpp.hpp"
 
-#include "rosbag2_test_common/publication_manager.hpp"
-#include "rosbag2_test_common/wait_for.hpp"
+#include "rosbag2_test_common_backport/publication_manager.hpp"
+#include "rosbag2_test_common_backport/wait_for.hpp"
 
-#include "rosbag2_transport/recorder.hpp"
+#include "rosbag2_transport_backport/recorder.hpp"
 
 #include "test_msgs/msg/arrays.hpp"
 #include "test_msgs/message_fixtures.hpp"
 
-#include "rosbag2_transport/qos.hpp"
+#include "rosbag2_transport_backport/qos.hpp"
 #include "record_integration_fixture.hpp"
 
 TEST_F(RecordIntegrationTestFixture, published_messages_from_multiple_topics_are_recorded)

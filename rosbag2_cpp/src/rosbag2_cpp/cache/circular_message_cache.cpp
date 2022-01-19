@@ -17,10 +17,10 @@
 #include <string>
 #include <utility>
 
-#include "rosbag2_cpp/cache/circular_message_cache.hpp"
-#include "rosbag2_cpp/cache/message_cache_circular_buffer.hpp"
-#include "rosbag2_cpp/cache/cache_buffer_interface.hpp"
-#include "rosbag2_cpp/logging.hpp"
+#include "rosbag2_cpp_backport/cache/circular_message_cache.hpp"
+#include "rosbag2_cpp_backport/cache/message_cache_circular_buffer.hpp"
+#include "rosbag2_cpp_backport/cache/cache_buffer_interface.hpp"
+#include "rosbag2_cpp_backport/logging.hpp"
 
 namespace rosbag2_cpp
 {

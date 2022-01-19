@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.7)
 
-project(zstd_vendor)
+project(zstd_vendor_backport)
 
 find_package(ament_cmake REQUIRED)
 

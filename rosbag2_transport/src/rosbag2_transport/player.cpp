@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "rosbag2_transport/player.hpp"
+#include "rosbag2_transport_backport/player.hpp"
 
 #include <algorithm>
 #include <chrono>
@@ -29,13 +29,13 @@
 
 #include "rcutils/time.h"
 
-#include "rosbag2_cpp/clocks/time_controller_clock.hpp"
-#include "rosbag2_cpp/reader.hpp"
-#include "rosbag2_cpp/typesupport_helpers.hpp"
+#include "rosbag2_cpp_backport/clocks/time_controller_clock.hpp"
+#include "rosbag2_cpp_backport/reader.hpp"
+#include "rosbag2_cpp_backport/typesupport_helpers.hpp"
 
-#include "rosbag2_storage/storage_filter.hpp"
+#include "rosbag2_storage_backport/storage_filter.hpp"
 
-#include "rosbag2_transport/qos.hpp"
+#include "rosbag2_transport_backport/qos.hpp"
 
 namespace
 {
@@ -439,6 +439,16 @@ void Player::play_messages_from_queue()
   }
 }
 
+class ClockQoS : public rclcpp::QoS
+{
+public:
+  explicit
+  ClockQoS(
+    const rclcpp::QoSInitialization & qos_initialization = rclcpp::KeepLast(1))
+  : QoS(qos_initialization, rmw_qos_profile_sensor_data)
+  {}
+};
+
 void Player::prepare_publishers()
 {
   rosbag2_storage::StorageFilter storage_filter;
@@ -452,7 +462,7 @@ void Player::prepare_publishers()
     // NOTE: PlayerClock does not own this publisher because rosbag2_cpp
     // should not own transport-based functionality
     clock_publisher_ = create_publisher<rosgraph_msgs::msg::Clock>(
-      "/clock", rclcpp::ClockQoS());
+      "/clock", ClockQoS());
     clock_publish_timer_ = create_wall_timer(
       publish_period, [this]() {
         auto msg = rosgraph_msgs::msg::Clock();
@@ -559,67 +569,75 @@ void Player::add_keyboard_callbacks()
 
 void Player::create_control_services()
 {
-  srv_pause_ = create_service<rosbag2_interfaces::srv::Pause>(
+  srv_pause_ = create_service<rosbag2_interfaces_backport::srv::Pause>(
     "~/pause",
     [this](
-      rosbag2_interfaces::srv::Pause::Request::ConstSharedPtr,
-      rosbag2_interfaces::srv::Pause::Response::SharedPtr)
+      const std::shared_ptr<rmw_request_id_t>/* request_header */,
+      const std::shared_ptr<rosbag2_interfaces_backport::srv::Pause::Request> /* request */,
+      const std::shared_ptr<rosbag2_interfaces_backport::srv::Pause::Response> /* response */)
     {
       pause();
     });
-  srv_resume_ = create_service<rosbag2_interfaces::srv::Resume>(
+  srv_resume_ = create_service<rosbag2_interfaces_backport::srv::Resume>(
     "~/resume",
     [this](
-      rosbag2_interfaces::srv::Resume::Request::ConstSharedPtr,
-      rosbag2_interfaces::srv::Resume::Response::SharedPtr)
+      const std::shared_ptr<rmw_request_id_t>/* request_header */,
+      const std::shared_ptr<rosbag2_interfaces_backport::srv::Resume::Request> /* request */,
+      const std::shared_ptr<rosbag2_interfaces_backport::srv::Resume::Response> /* response */)
     {
       resume();
     });
-  srv_toggle_paused_ = create_service<rosbag2_interfaces::srv::TogglePaused>(
+  srv_toggle_paused_ = create_service<rosbag2_interfaces_backport::srv::TogglePaused>(
     "~/toggle_paused",
     [this](
-      rosbag2_interfaces::srv::TogglePaused::Request::ConstSharedPtr,
-      rosbag2_interfaces::srv::TogglePaused::Response::SharedPtr)
+      const std::shared_ptr<rmw_request_id_t>/* request_header */,
+      const std::shared_ptr<rosbag2_interfaces_backport::srv::TogglePaused::Request> /* request */,
+      const std::shared_ptr<rosbag2_interfaces_backport::srv::TogglePaused::Response> /* response */)
     {
       toggle_paused();
     });
-  srv_is_paused_ = create_service<rosbag2_interfaces::srv::IsPaused>(
+  srv_is_paused_ = create_service<rosbag2_interfaces_backport::srv::IsPaused>(
     "~/is_paused",
     [this](
-      rosbag2_interfaces::srv::IsPaused::Request::ConstSharedPtr,
-      rosbag2_interfaces::srv::IsPaused::Response::SharedPtr response)
+      const std::shared_ptr<rmw_request_id_t>/* request_header */,
+      const std::shared_ptr<rosbag2_interfaces_backport::srv::IsPaused::Request> /* request */,
+      const std::shared_ptr<rosbag2_interfaces_backport::srv::IsPaused::Response> response)
     {
       response->paused = is_paused();
     });
-  srv_get_rate_ = create_service<rosbag2_interfaces::srv::GetRate>(
+  srv_get_rate_ = create_service<rosbag2_interfaces_backport::srv::GetRate>(
     "~/get_rate",
     [this](
-      rosbag2_interfaces::srv::GetRate::Request::ConstSharedPtr,
-      rosbag2_interfaces::srv::GetRate::Response::SharedPtr response)
+      const std::shared_ptr<rmw_request_id_t>/* request_header */,
+      const std::shared_ptr<rosbag2_interfaces_backport::srv::GetRate::Request> /* request */,
+      const std::shared_ptr<rosbag2_interfaces_backport::srv::GetRate::Response> response)
     {
       response->rate = get_rate();
     });
-  srv_set_rate_ = create_service<rosbag2_interfaces::srv::SetRate>(
+  srv_set_rate_ = create_service<rosbag2_interfaces_backport::srv::SetRate>(
     "~/set_rate",
     [this](
-      rosbag2_interfaces::srv::SetRate::Request::ConstSharedPtr request,
-      rosbag2_interfaces::srv::SetRate::Response::SharedPtr response)
+      const std::shared_ptr<rmw_request_id_t>/* request_header */,
+      const std::shared_ptr<rosbag2_interfaces_backport::srv::SetRate::Request> request,
+      const std::shared_ptr<rosbag2_interfaces_backport::srv::SetRate::Response> response)
     {
       response->success = set_rate(request->rate);
     });
-  srv_play_next_ = create_service<rosbag2_interfaces::srv::PlayNext>(
+  srv_play_next_ = create_service<rosbag2_interfaces_backport::srv::PlayNext>(
     "~/play_next",
     [this](
-      rosbag2_interfaces::srv::PlayNext::Request::ConstSharedPtr,
-      rosbag2_interfaces::srv::PlayNext::Response::SharedPtr response)
+      const std::shared_ptr<rmw_request_id_t>/* request_header */,
+      const std::shared_ptr<rosbag2_interfaces_backport::srv::PlayNext::Request> /* request */,
+      const std::shared_ptr<rosbag2_interfaces_backport::srv::PlayNext::Response> response)
     {
       response->success = play_next();
     });
-  srv_seek_ = create_service<rosbag2_interfaces::srv::Seek>(
+  srv_seek_ = create_service<rosbag2_interfaces_backport::srv::Seek>(
     "~/seek",
     [this](
-      rosbag2_interfaces::srv::Seek::Request::ConstSharedPtr request,
-      rosbag2_interfaces::srv::Seek::Response::SharedPtr response)
+      const std::shared_ptr<rmw_request_id_t>/* request_header */,
+      const std::shared_ptr<rosbag2_interfaces_backport::srv::Seek::Request> request,
+      const std::shared_ptr<rosbag2_interfaces_backport::srv::Seek::Response> response)
     {
       seek(rclcpp::Time(request->time).nanoseconds());
       response->success = true;

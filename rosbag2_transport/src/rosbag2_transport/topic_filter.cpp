@@ -22,7 +22,7 @@
 
 #include "rclcpp/node_interfaces/node_graph_interface.hpp"
 #include "rcpputils/split.hpp"
-#include "rosbag2_cpp/typesupport_helpers.hpp"
+#include "rosbag2_cpp_backport/typesupport_helpers.hpp"
 
 #include "logging.hpp"
 #include "topic_filter.hpp"

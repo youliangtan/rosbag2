@@ -22,11 +22,11 @@
 #include "rcpputils/filesystem_helper.hpp"
 #include "rcpputils/scope_exit.hpp"
 #include "rcutils/filesystem.h"
-#include "rosbag2_compression_zstd/zstd_decompressor.hpp"
-#include "rosbag2_storage/metadata_io.hpp"
-#include "rosbag2_test_common/publication_manager.hpp"
-#include "rosbag2_test_common/subscription_manager.hpp"
-#include "rosbag2_test_common/process_execution_helpers.hpp"
+#include "rosbag2_compression_zstd_backport/zstd_decompressor.hpp"
+#include "rosbag2_storage_backport/metadata_io.hpp"
+#include "rosbag2_test_common_backport/publication_manager.hpp"
+#include "rosbag2_test_common_backport/subscription_manager.hpp"
+#include "rosbag2_test_common_backport/process_execution_helpers.hpp"
 
 #include "record_fixture.hpp"
 

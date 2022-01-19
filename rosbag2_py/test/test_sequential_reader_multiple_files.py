@@ -25,7 +25,7 @@ if os.environ.get('ROSBAG2_PY_TEST_WITH_RTLD_GLOBAL', None) is not None:
     sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_LAZY)
 
 from common import get_rosbag_options  # noqa
-import rosbag2_py  # noqa
+import rosbag2_py_backport  # noqa
 
 RESOURCES_PATH = Path(os.environ['ROSBAG2_PY_TEST_RESOURCES_DIR'])
 
@@ -34,11 +34,11 @@ def test_reset_filter():
     bag_path = str(RESOURCES_PATH / 'wbag')
     storage_options, converter_options = get_rosbag_options(bag_path)
 
-    reader = rosbag2_py.SequentialReader()
+    reader = rosbag2_py_backport.SequentialReader()
     reader.open(storage_options, converter_options)
 
     # Set filter for topic of string type
-    storage_filter = rosbag2_py.StorageFilter(topics=['AAA', 'CCC', 'DDD'])
+    storage_filter = rosbag2_py_backport.StorageFilter(topics=['AAA', 'CCC', 'DDD'])
     reader.set_filter(storage_filter)
 
     (topic, data, t) = reader.read_next()
@@ -79,7 +79,7 @@ def test_seek_forward():
     bag_path = str(RESOURCES_PATH / 'wbag')
     storage_options, converter_options = get_rosbag_options(bag_path)
 
-    reader = rosbag2_py.SequentialReader()
+    reader = rosbag2_py_backport.SequentialReader()
     reader.open(storage_options, converter_options)
 
     # seek forward
@@ -91,7 +91,7 @@ def test_seek_forward():
     assert t == 1822
 
     # set filter continues in same location
-    storage_filter = rosbag2_py.StorageFilter(topics=['BBB', 'GGG'])
+    storage_filter = rosbag2_py_backport.StorageFilter(topics=['BBB', 'GGG'])
     reader.set_filter(storage_filter)
 
     (topic, data, t) = reader.read_next()
@@ -114,12 +114,12 @@ def test_seek_backward():
     bag_path = str(RESOURCES_PATH / 'wbag')
     storage_options, converter_options = get_rosbag_options(bag_path)
 
-    reader = rosbag2_py.SequentialReader()
+    reader = rosbag2_py_backport.SequentialReader()
     reader.open(storage_options, converter_options)
 
     # seek forward first
     reader.seek(1822)
-    storage_filter = rosbag2_py.StorageFilter(topics=['BBB', 'GGG'])
+    storage_filter = rosbag2_py_backport.StorageFilter(topics=['BBB', 'GGG'])
     reader.set_filter(storage_filter)
     (topic, data, t) = reader.read_next()
 

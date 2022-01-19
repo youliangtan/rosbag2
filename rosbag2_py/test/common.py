@@ -17,13 +17,13 @@ from typing import Callable
 
 from rclpy.clock import Clock, ClockType
 from rclpy.duration import Duration
-import rosbag2_py
+import rosbag2_py_backport
 
 
 def get_rosbag_options(path, serialization_format='cdr'):
-    storage_options = rosbag2_py.StorageOptions(uri=path, storage_id='sqlite3')
+    storage_options = rosbag2_py_backport.StorageOptions(uri=path, storage_id='sqlite3')
 
-    converter_options = rosbag2_py.ConverterOptions(
+    converter_options = rosbag2_py_backport.ConverterOptions(
         input_serialization_format=serialization_format,
         output_serialization_format=serialization_format)
 

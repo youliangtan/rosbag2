@@ -15,8 +15,8 @@
 #include <memory>
 #include <vector>
 
-#include "rosbag2_cpp/cache/cache_buffer_interface.hpp"
-#include "rosbag2_cpp/cache/message_cache_buffer.hpp"
+#include "rosbag2_cpp_backport/cache/cache_buffer_interface.hpp"
+#include "rosbag2_cpp_backport/cache/message_cache_buffer.hpp"
 
 namespace rosbag2_cpp
 {

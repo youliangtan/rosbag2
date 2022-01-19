@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(rosbag2_transport)
+project(rosbag2_transport_backport)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -8,7 +8,7 @@ endif()
 
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 14)
+  set(CMAKE_CXX_STANDARD 17)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -27,16 +27,19 @@ find_package(rcl REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rcutils REQUIRED)
 find_package(rmw REQUIRED)
-find_package(rosbag2_compression REQUIRED)
-find_package(rosbag2_cpp REQUIRED)
-find_package(rosbag2_interfaces REQUIRED)
-find_package(rosbag2_storage REQUIRED)
+find_package(rosbag2_compression_backport REQUIRED)
+find_package(rosbag2_cpp_backport REQUIRED)
+find_package(rosbag2_interfaces_backport REQUIRED)
+find_package(rosbag2_storage_backport REQUIRED)
 find_package(rmw_implementation_cmake REQUIRED)
 find_package(shared_queues_vendor REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED
   src/rosbag2_transport/bag_rewrite.cpp
+  src/rosbag2_transport/typesupport_helpers.cpp
+  src/rosbag2_transport/generic_publisher.cpp
+  src/rosbag2_transport/generic_subscription.cpp
   src/rosbag2_transport/player.cpp
   src/rosbag2_transport/qos.cpp
   src/rosbag2_transport/reader_writer_factory.cpp
@@ -52,10 +55,10 @@ ament_target_dependencies(${PROJECT_NAME}
   rclcpp
   rcutils
   rmw
-  rosbag2_compression
-  rosbag2_cpp
-  rosbag2_interfaces
-  rosbag2_storage
+  rosbag2_compression_backport
+  rosbag2_cpp_backport
+  rosbag2_interfaces_backport
+  rosbag2_storage_backport
   shared_queues_vendor
   yaml_cpp_vendor
 )
@@ -81,9 +84,9 @@ ament_export_libraries(${PROJECT_NAME})
 ament_export_targets(export_${PROJECT_NAME})
 ament_export_dependencies(
   keyboard_handler
-  rosbag2_cpp
-  rosbag2_compression
-  rosbag2_interfaces
+  rosbag2_cpp_backport
+  rosbag2_compression_backport
+  rosbag2_interfaces_backport
   shared_queues_vendor
   yaml_cpp_vendor)
 
@@ -97,92 +100,92 @@ function(create_tests_for_rmw_implementation)
 
   rosbag2_transport_add_gmock(test_play
     test/rosbag2_transport/test_play.cpp
-    LINK_LIBS rosbag2_transport
-    AMENT_DEPS test_msgs rosbag2_test_common
+    LINK_LIBS rosbag2_transport_backport
+    AMENT_DEPS test_msgs rosbag2_test_common_backport
     ${SKIP_TEST})
 
   rosbag2_transport_add_gmock(test_play_loop
     test/rosbag2_transport/test_play_loop.cpp
-    LINK_LIBS rosbag2_transport
-    AMENT_DEPS test_msgs rosbag2_test_common
+    LINK_LIBS rosbag2_transport_backport
+    AMENT_DEPS test_msgs rosbag2_test_common_backport
     ${SKIP_TEST})
 
   rosbag2_transport_add_gmock(test_play_publish_clock
     test/rosbag2_transport/test_play_publish_clock.cpp
-    LINK_LIBS rosbag2_transport
-    AMENT_DEPS test_msgs rosbag2_test_common
+    LINK_LIBS rosbag2_transport_backport
+    AMENT_DEPS test_msgs rosbag2_test_common_backport
     ${SKIP_TEST})
 
   rosbag2_transport_add_gmock(test_play_timing
     test/rosbag2_transport/test_play_timing.cpp
-    LINK_LIBS rosbag2_transport
-    AMENT_DEPS test_msgs rosbag2_test_common)
+    LINK_LIBS rosbag2_transport_backport
+    AMENT_DEPS test_msgs rosbag2_test_common_backport)
 
   rosbag2_transport_add_gmock(test_play_seek
     test/rosbag2_transport/test_play_seek.cpp
-    LINK_LIBS rosbag2_transport
-    AMENT_DEPS test_msgs rosbag2_test_common)
+    LINK_LIBS rosbag2_transport_backport
+    AMENT_DEPS test_msgs rosbag2_test_common_backport)
 
   rosbag2_transport_add_gmock(test_play_services
     test/rosbag2_transport/test_play_services.cpp
-    LINK_LIBS rosbag2_transport
-    AMENT_DEPS test_msgs rosbag2_test_common)
+    LINK_LIBS rosbag2_transport_backport
+    AMENT_DEPS test_msgs rosbag2_test_common_backport)
 
   rosbag2_transport_add_gmock(test_play_topic_remap
     test/rosbag2_transport/test_play_topic_remap.cpp
-    LINK_LIBS rosbag2_transport
-    AMENT_DEPS test_msgs rosbag2_test_common
+    LINK_LIBS rosbag2_transport_backport
+    AMENT_DEPS test_msgs rosbag2_test_common_backport
     ${SKIP_TEST})
 
   rosbag2_transport_add_gmock(test_play_next
       test/rosbag2_transport/test_play_next.cpp
       INCLUDE_DIRS $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/rosbag2_transport>
-      LINK_LIBS rosbag2_transport
-      AMENT_DEPS test_msgs rosbag2_test_common)
+      LINK_LIBS rosbag2_transport_backport
+      AMENT_DEPS test_msgs rosbag2_test_common_backport)
 
   rosbag2_transport_add_gmock(test_qos
     test/rosbag2_transport/test_qos.cpp
     INCLUDE_DIRS $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    LINK_LIBS rosbag2_transport
-    AMENT_DEPS rosbag2_test_common yaml_cpp_vendor)
+    LINK_LIBS rosbag2_transport_backport
+    AMENT_DEPS rosbag2_test_common_backport yaml_cpp_vendor)
 
   rosbag2_transport_add_gmock(test_record
     test/rosbag2_transport/test_record.cpp
     INCLUDE_DIRS $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/rosbag2_transport>
-    LINK_LIBS rosbag2_transport
-    AMENT_DEPS test_msgs rosbag2_test_common
+    LINK_LIBS rosbag2_transport_backport
+    AMENT_DEPS test_msgs rosbag2_test_common_backport
     ${SKIP_TEST})
 
   rosbag2_transport_add_gmock(test_record_all
     test/rosbag2_transport/test_record_all.cpp
-    LINK_LIBS rosbag2_transport
-    AMENT_DEPS test_msgs rosbag2_test_common)
+    LINK_LIBS rosbag2_transport_backport
+    AMENT_DEPS test_msgs rosbag2_test_common_backport)
 
   rosbag2_transport_add_gmock(test_record_all_ignore_leaf_topics
     test/rosbag2_transport/test_record_all_ignore_leaf_topics.cpp
-    LINK_LIBS rosbag2_transport
-    AMENT_DEPS test_msgs rosbag2_test_common)
+    LINK_LIBS rosbag2_transport_backport
+    AMENT_DEPS test_msgs rosbag2_test_common_backport)
 
   rosbag2_transport_add_gmock(test_record_all_no_discovery
     test/rosbag2_transport/test_record_all_no_discovery.cpp
-    LINK_LIBS rosbag2_transport
-    AMENT_DEPS test_msgs rosbag2_test_common)
+    LINK_LIBS rosbag2_transport_backport
+    AMENT_DEPS test_msgs rosbag2_test_common_backport)
 
   rosbag2_transport_add_gmock(test_keyboard_controls
     test/rosbag2_transport/test_keyboard_controls.cpp
-    LINK_LIBS rosbag2_transport
-    AMENT_DEPS test_msgs rosbag2_test_common)
+    LINK_LIBS rosbag2_transport_backport
+    AMENT_DEPS test_msgs rosbag2_test_common_backport)
 
   rosbag2_transport_add_gmock(test_record_regex
     test/rosbag2_transport/test_record_regex.cpp
-    LINK_LIBS rosbag2_transport
-    AMENT_DEPS test_msgs rosbag2_test_common
+    LINK_LIBS rosbag2_transport_backport
+    AMENT_DEPS test_msgs rosbag2_test_common_backport
     ${SKIP_TEST})
 
   rosbag2_transport_add_gmock(test_record_services
     test/rosbag2_transport/test_record_services.cpp
-    LINK_LIBS rosbag2_transport
-    AMENT_DEPS test_msgs rosbag2_test_common)
+    LINK_LIBS rosbag2_transport_backport
+    AMENT_DEPS test_msgs rosbag2_test_common_backport)
 
 endfunction()
 
@@ -193,7 +196,7 @@ if(BUILD_TESTING)
   find_package(ament_index_cpp REQUIRED)
   find_package(ament_lint_auto REQUIRED)
   find_package(test_msgs REQUIRED)
-  find_package(rosbag2_test_common REQUIRED)
+  find_package(rosbag2_test_common_backport REQUIRED)
   include(cmake/rosbag2_transport_add_gmock.cmake)
   ament_lint_auto_find_test_dependencies()
   call_for_each_rmw_implementation(create_tests_for_rmw_implementation)
@@ -207,13 +210,13 @@ if(BUILD_TESTING)
     test/rosbag2_transport/test_topic_filter.cpp)
   target_include_directories(test_topic_filter PRIVATE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/rosbag2_transport>)
-  target_link_libraries(test_topic_filter rosbag2_transport)
+  target_link_libraries(test_topic_filter rosbag2_transport_backport)
 
   ament_add_gmock(test_rewrite
     test/rosbag2_transport/test_rewrite.cpp)
   target_include_directories(test_rewrite PRIVATE include)
   target_link_libraries(test_rewrite ${PROJECT_NAME})
-  ament_target_dependencies(test_rewrite keyboard_handler rcpputils rosbag2_cpp test_msgs)
+  ament_target_dependencies(test_rewrite keyboard_handler rcpputils rosbag2_cpp_backport test_msgs)
 endif()
 
 ament_package()

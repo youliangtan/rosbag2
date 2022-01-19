@@ -14,7 +14,7 @@
 
 #include <gmock/gmock.h>
 
-#include "rosbag2_transport/record_options.hpp"
+#include "rosbag2_transport_backport/record_options.hpp"
 
 using namespace ::testing;  // NOLINT
 

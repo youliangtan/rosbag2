@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "rosbag2_transport/reader_writer_factory.hpp"
+#include "rosbag2_transport_backport/reader_writer_factory.hpp"
 
 #include <memory>
 #include <utility>
 
-#include "rosbag2_compression/compression_options.hpp"
-#include "rosbag2_compression/sequential_compression_reader.hpp"
-#include "rosbag2_compression/sequential_compression_writer.hpp"
-#include "rosbag2_storage/metadata_io.hpp"
+#include "rosbag2_compression_backport/compression_options.hpp"
+#include "rosbag2_compression_backport/sequential_compression_reader.hpp"
+#include "rosbag2_compression_backport/sequential_compression_writer.hpp"
+#include "rosbag2_storage_backport/metadata_io.hpp"
 
 namespace rosbag2_transport
 {

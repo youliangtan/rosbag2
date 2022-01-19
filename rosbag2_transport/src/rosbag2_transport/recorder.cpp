@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "rosbag2_transport/recorder.hpp"
+#include "rosbag2_transport_backport/recorder.hpp"
 
 #include <algorithm>
 #include <future>
@@ -27,12 +27,12 @@
 #include "rclcpp/logging.hpp"
 #include "rclcpp/clock.hpp"
 
-#include "rosbag2_cpp/writer.hpp"
+#include "rosbag2_cpp_backport/writer.hpp"
 
-#include "rosbag2_interfaces/srv/snapshot.hpp"
+#include "rosbag2_interfaces_backport/srv/snapshot.hpp"
 
-#include "rosbag2_storage/yaml.hpp"
-#include "rosbag2_transport/qos.hpp"
+#include "rosbag2_storage_backport/yaml.hpp"
+#include "rosbag2_transport_backport/qos.hpp"
 
 #include "topic_filter.hpp"
 
@@ -120,12 +120,12 @@ void Recorder::record()
 
   // Only expose snapshot service when mode is enabled
   if (storage_options_.snapshot_mode) {
-    srv_snapshot_ = create_service<rosbag2_interfaces::srv::Snapshot>(
+    srv_snapshot_ = create_service<rosbag2_interfaces_backport::srv::Snapshot>(
       "~/snapshot",
       [this](
         const std::shared_ptr<rmw_request_id_t>/* request_header */,
-        const std::shared_ptr<rosbag2_interfaces::srv::Snapshot::Request>/* request */,
-        const std::shared_ptr<rosbag2_interfaces::srv::Snapshot::Response> response)
+        const std::shared_ptr<rosbag2_interfaces_backport::srv::Snapshot::Request>/* request */,
+        const std::shared_ptr<rosbag2_interfaces_backport::srv::Snapshot::Response> response)
       {
         response->success = writer_->take_snapshot();
       });
@@ -248,7 +248,7 @@ void Recorder::subscribe_topic(const rosbag2_storage::TopicMetadata & topic)
   }
 }
 
-std::shared_ptr<rclcpp::GenericSubscription>
+std::shared_ptr<GenericSubscription>
 Recorder::create_subscription(
   const std::string & topic_name, const std::string & topic_type, const rclcpp::QoS & qos)
 {

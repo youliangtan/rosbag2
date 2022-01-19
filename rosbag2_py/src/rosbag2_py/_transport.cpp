@@ -20,14 +20,14 @@
 #include <utility>
 #include <vector>
 
-#include "rosbag2_storage/storage_options.hpp"
-#include "rosbag2_storage/yaml.hpp"
-#include "rosbag2_transport/bag_rewrite.hpp"
-#include "rosbag2_transport/play_options.hpp"
-#include "rosbag2_transport/player.hpp"
-#include "rosbag2_transport/reader_writer_factory.hpp"
-#include "rosbag2_transport/record_options.hpp"
-#include "rosbag2_transport/recorder.hpp"
+#include "rosbag2_storage_backport/storage_options.hpp"
+#include "rosbag2_storage_backport/yaml.hpp"
+#include "rosbag2_transport_backport/bag_rewrite.hpp"
+#include "rosbag2_transport_backport/play_options.hpp"
+#include "rosbag2_transport_backport/player.hpp"
+#include "rosbag2_transport_backport/reader_writer_factory.hpp"
+#include "rosbag2_transport_backport/record_options.hpp"
+#include "rosbag2_transport_backport/recorder.hpp"
 
 #include "./pybind11.hpp"
 
@@ -65,7 +65,7 @@ struct OptionsWrapper : public T
 public:
   void setDelay(double delay)
   {
-    this->delay = rclcpp::Duration::from_nanoseconds(
+    this->delay = rclcpp::Duration(
       static_cast<rcl_duration_value_t>(RCUTILS_S_TO_NS(delay)));
   }
 

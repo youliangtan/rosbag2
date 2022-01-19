@@ -16,7 +16,7 @@
 #include <vector>
 
 
-#include "rosbag2_transport/qos.hpp"
+#include "rosbag2_transport_backport/qos.hpp"
 #include "logging.hpp"
 
 namespace
@@ -34,6 +34,48 @@ namespace
  * With those values, if a bag is played back in a different implementation than it was recorded,
  * the publishers will fail to be created with an error indicating an invalid QoS value..
  */
+
+#define RMW_DURATION_INFINITE {9223372036LL, 854775807LL}
+#define RMW_DURATION_UNSPECIFIED {0LL, 0LL}
+typedef rcutils_duration_value_t rmw_duration_t;
+
+rmw_duration_t
+rmw_time_total_nsec(const rmw_time_t time)
+{
+  static const uint64_t max_sec = INT64_MAX / RCUTILS_S_TO_NS(1);
+  if (time.sec > max_sec) {
+    // Seconds not representable in nanoseconds
+    return INT64_MAX;
+  }
+
+  const int64_t sec_as_nsec = RCUTILS_S_TO_NS(time.sec);
+  if (time.nsec > (uint64_t)(INT64_MAX - sec_as_nsec)) {
+    // overflow
+    return INT64_MAX;
+  }
+  return sec_as_nsec + time.nsec;
+}
+
+bool
+rmw_time_equal(const rmw_time_t left, const rmw_time_t right)
+{
+  return rmw_time_total_nsec(left) == rmw_time_total_nsec(right);
+}
+
+rmw_time_t
+rmw_time_from_nsec(const rmw_duration_t nanoseconds)
+{
+  if (nanoseconds < 0) {
+    return (rmw_time_t)RMW_DURATION_INFINITE;
+  }
+
+  // Avoid typing the 1 billion constant
+  rmw_time_t time;
+  time.sec = RCUTILS_NS_TO_S(nanoseconds);
+  time.nsec = nanoseconds % RCUTILS_S_TO_NS(1);
+  return time;
+}
+
 static const rmw_time_t RMW_CYCLONEDDS_FOXY_INFINITE = rmw_time_from_nsec(0x7FFFFFFFFFFFFFFFll);
 static const rmw_time_t RMW_FASTRTPS_FOXY_INFINITE {0x7FFFFFFFll, 0xFFFFFFFFll};
 static const rmw_time_t RMW_CONNEXT_FOXY_INFINITE  {0x7FFFFFFFll, 0x7FFFFFFFll};

@@ -14,7 +14,7 @@
 
 #include <gmock/gmock.h>
 
-#include "rosbag2_storage/storage_options.hpp"
+#include "rosbag2_storage_backport/storage_options.hpp"
 
 using namespace ::testing;  // NOLINT
 

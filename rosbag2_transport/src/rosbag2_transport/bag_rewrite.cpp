@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "rosbag2_transport/bag_rewrite.hpp"
+#include "rosbag2_transport_backport/bag_rewrite.hpp"
 
 #include <map>
 #include <memory>
@@ -22,9 +22,9 @@
 #include <utility>
 #include <vector>
 
-#include "rosbag2_cpp/reader.hpp"
-#include "rosbag2_cpp/writer.hpp"
-#include "rosbag2_transport/reader_writer_factory.hpp"
+#include "rosbag2_cpp_backport/reader.hpp"
+#include "rosbag2_cpp_backport/writer.hpp"
+#include "rosbag2_transport_backport/reader_writer_factory.hpp"
 
 #include "logging.hpp"
 #include "topic_filter.hpp"

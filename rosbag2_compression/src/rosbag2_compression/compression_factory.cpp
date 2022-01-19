@@ -16,7 +16,7 @@
 #include <string>
 #include <vector>
 
-#include "rosbag2_compression/compression_factory.hpp"
+#include "rosbag2_compression_backport/compression_factory.hpp"
 
 #include "compression_factory_impl.hpp"
 

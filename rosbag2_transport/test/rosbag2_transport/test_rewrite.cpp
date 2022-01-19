@@ -19,11 +19,46 @@
 #include <utility>
 
 #include "rcpputils/filesystem_helper.hpp"
-#include "rosbag2_transport/bag_rewrite.hpp"
-#include "rosbag2_transport/reader_writer_factory.hpp"
+#include "rosbag2_transport_backport/bag_rewrite.hpp"
+#include "rosbag2_transport_backport/reader_writer_factory.hpp"
 
 using namespace ::testing;  // NOLINT
 
+
+rcpputils::fs::path create_temp_directory(const std::string & base_name, const std::string & parent_path)
+{
+  auto template_path = base_name + "XXXXXX";
+  rcpputils::fs::path parent_p(parent_path);
+  std::string full_template_str = (parent_p / template_path).string();
+  if (!rcpputils::fs::create_directories(parent_p)) {
+    std::error_code ec{errno, std::system_category()};
+    errno = 0;
+    throw std::system_error(ec, "could not create the parent directory");
+  }
+
+#ifdef _WIN32
+  errno_t errcode = _mktemp_s(&full_template_str[0], full_template_str.size() + 1);
+  if (errcode) {
+    std::error_code ec(static_cast<int>(errcode), std::system_category());
+    throw std::system_error(ec, "could not format the temp directory name template");
+  }
+  rcpputils::fs::path final_path{full_template_str};
+  if (!create_directories(final_path)) {
+    std::error_code ec(static_cast<int>(GetLastError()), std::system_category());
+    throw std::system_error(ec, "could not create the temp directory");
+  }
+#else
+  const char * dir_name = mkdtemp(&full_template_str[0]);
+  if (dir_name == nullptr) {
+    std::error_code ec{errno, std::system_category()};
+    errno = 0;
+    throw std::system_error(ec, "could not format or create the temp directory");
+  }
+  rcpputils::fs::path final_path{dir_name};
+#endif
+
+  return final_path;
+}
 
 /*
 Builtin knowledge about the bags under test:
@@ -50,7 +85,7 @@ class TestRewrite : public Test
 {
 public:
   TestRewrite()
-  : output_dir_(rcpputils::fs::create_temp_directory("test_bag_rewrite"))
+  : output_dir_(create_temp_directory("test_bag_rewrite", "tmp"))
   {}
 
   void use_input_a()
@@ -72,8 +107,8 @@ public:
     // rcpputils::fs::remove_all(output_dir_);
   }
 
-  const rcpputils::fs::path bags_path_{_SRC_RESOURCES_DIR_PATH};
-  const rcpputils::fs::path output_dir_;
+  rcpputils::fs::path bags_path_{_SRC_RESOURCES_DIR_PATH};
+  rcpputils::fs::path output_dir_;
   std::vector<rosbag2_storage::StorageOptions> input_bags_;
   std::vector<std::pair<rosbag2_storage::StorageOptions, rosbag2_transport::RecordOptions>>
   output_bags_;

@@ -18,7 +18,7 @@
 #include <utility>
 #include <vector>
 
-#include "rosbag2_transport/player.hpp"
+#include "rosbag2_transport_backport/player.hpp"
 #include "rosgraph_msgs/msg/clock.hpp"
 #include "test_msgs/message_fixtures.hpp"
 
@@ -34,6 +34,16 @@ rcutils_duration_value_t period_for_frequency(double frequency)
 }
 }  // namespace
 
+class ClockQoS : public rclcpp::QoS
+{
+public:
+  explicit
+  ClockQoS(
+    const rclcpp::QoSInitialization & qos_initialization = rclcpp::KeepLast(1))
+  : QoS(qos_initialization, rmw_qos_profile_sensor_data)
+  {}
+};
+
 class ClockPublishFixture : public RosBag2PlayTestFixture
 {
 public:
@@ -41,7 +51,7 @@ public:
   : RosBag2PlayTestFixture()
   {
     sub_->add_subscription<rosgraph_msgs::msg::Clock>(
-      "/clock", expected_clock_messages_, rclcpp::ClockQoS());
+      "/clock", expected_clock_messages_, ClockQoS());
   }
 
   void run_test()

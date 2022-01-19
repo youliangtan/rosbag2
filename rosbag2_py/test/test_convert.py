@@ -26,8 +26,8 @@ if os.environ.get('ROSBAG2_PY_TEST_WITH_RTLD_GLOBAL', None) is not None:
     sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_LAZY)
 
 from common import get_rosbag_options  # noqa
-import rosbag2_py  # noqa
-from rosbag2_py import (
+import rosbag2_py_backport  # noqa
+from rosbag2_py_backport import (
     bag_rewrite,
     StorageOptions,
 )  # noqa

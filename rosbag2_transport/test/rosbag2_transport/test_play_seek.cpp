@@ -21,10 +21,11 @@
 #include <utility>
 #include <vector>
 
+#include "rcpputils/filesystem_helper.hpp"
 #include "mock_player.hpp"
-#include "rosbag2_cpp/writers/sequential_writer.hpp"
+#include "rosbag2_cpp_backport/writers/sequential_writer.hpp"
 #include "rosbag2_play_test_fixture.hpp"
-#include "rosbag2_storage/storage_options.hpp"
+#include "rosbag2_storage_backport/storage_options.hpp"
 #include "test_msgs/message_fixtures.hpp"
 #include "test_msgs/msg/basic_types.hpp"
 
@@ -41,8 +42,8 @@ public:
     topic_types_ = std::vector<rosbag2_storage::TopicMetadata>{
       {"topic1", "test_msgs/BasicTypes", rmw_get_serialization_format(), ""}};
 
-    const rcpputils::fs::path base{_SRC_RESOURCES_DIR_PATH};
-    const rcpputils::fs::path bag_path = base / "test_bag_for_seek";
+    rcpputils::fs::path base{_SRC_RESOURCES_DIR_PATH};
+    rcpputils::fs::path bag_path = base / "test_bag_for_seek";
 
     storage_options_ = rosbag2_storage::StorageOptions({bag_path.string(), "sqlite3", 0, 0, 0});
     play_options_.read_ahead_queue_size = 2;

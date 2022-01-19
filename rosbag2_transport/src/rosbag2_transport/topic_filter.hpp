@@ -21,8 +21,8 @@
 #include <unordered_set>
 #include <vector>
 
-#include "rosbag2_transport/record_options.hpp"
-#include "rosbag2_transport/visibility_control.hpp"
+#include "rosbag2_transport_backport/record_options.hpp"
+#include "rosbag2_transport_backport/visibility_control.hpp"
 
 // This is necessary because of using stl types here. It is completely safe, because
 // a) the member is not accessible from the outside

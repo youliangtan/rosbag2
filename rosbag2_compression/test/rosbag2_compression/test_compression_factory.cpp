@@ -18,7 +18,7 @@
 #include <algorithm>
 #include <vector>
 
-#include "rosbag2_compression/compression_factory.hpp"
+#include "rosbag2_compression_backport/compression_factory.hpp"
 
 class CompressionFactoryTest : public ::testing::Test
 {

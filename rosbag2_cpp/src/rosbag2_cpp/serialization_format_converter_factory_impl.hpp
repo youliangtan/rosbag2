@@ -15,7 +15,7 @@
 #ifndef ROSBAG2_CPP__SERIALIZATION_FORMAT_CONVERTER_FACTORY_IMPL_HPP_
 #define ROSBAG2_CPP__SERIALIZATION_FORMAT_CONVERTER_FACTORY_IMPL_HPP_
 
-#include "rosbag2_cpp/serialization_format_converter_factory_interface.hpp"
+#include "rosbag2_cpp_backport/serialization_format_converter_factory_interface.hpp"
 
 #include <memory>
 #include <stdexcept>
@@ -24,9 +24,9 @@
 
 #include "pluginlib/class_loader.hpp"
 
-#include "rosbag2_cpp/converter_interfaces/serialization_format_converter.hpp"
-#include "rosbag2_cpp/logging.hpp"
-#include "rosbag2_cpp/visibility_control.hpp"
+#include "rosbag2_cpp_backport/converter_interfaces/serialization_format_converter.hpp"
+#include "rosbag2_cpp_backport/logging.hpp"
+#include "rosbag2_cpp_backport/visibility_control.hpp"
 
 #include "./rmw_implemented_serialization_format_converter.hpp"
 
@@ -44,17 +44,17 @@ public:
       converter_class_loader_ =
         std::make_unique<pluginlib::ClassLoader<
             converter_interfaces::SerializationFormatConverter>>(
-        "rosbag2_cpp",
+        "rosbag2_cpp_backport",
         converter_interfaces::SerializationFormatConverter::get_base_class_name());
       serializer_class_loader_ =
         std::make_shared<pluginlib::ClassLoader<
             converter_interfaces::SerializationFormatSerializer>>(
-        "rosbag2_cpp",
+        "rosbag2_cpp_backport",
         converter_interfaces::SerializationFormatSerializer::get_base_class_name());
       deserializer_class_loader_ =
         std::make_shared<pluginlib::ClassLoader<
             converter_interfaces::SerializationFormatDeserializer>>(
-        "rosbag2_cpp",
+        "rosbag2_cpp_backport",
         converter_interfaces::SerializationFormatDeserializer::get_base_class_name());
     } catch (const std::exception & e) {
       ROSBAG2_CPP_LOG_ERROR_STREAM("Unable to create class loader instance: " << e.what());

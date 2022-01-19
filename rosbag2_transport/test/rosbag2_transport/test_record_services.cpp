@@ -21,11 +21,11 @@
 
 #include "rclcpp/rclcpp.hpp"
 
-#include "rosbag2_interfaces/srv/snapshot.hpp"
-#include "rosbag2_transport/recorder.hpp"
+#include "rosbag2_interfaces_backport/srv/snapshot.hpp"
+#include "rosbag2_transport_backport/recorder.hpp"
 
-#include "rosbag2_test_common/publication_manager.hpp"
-#include "rosbag2_test_common/wait_for.hpp"
+#include "rosbag2_test_common_backport/publication_manager.hpp"
+#include "rosbag2_test_common_backport/wait_for.hpp"
 
 #include "test_msgs/msg/arrays.hpp"
 #include "test_msgs/msg/basic_types.hpp"
@@ -39,7 +39,7 @@ using namespace ::testing;  // NOLINT
 class RecordSrvsTest : public RecordIntegrationTestFixture
 {
 public:
-  using Snapshot = rosbag2_interfaces::srv::Snapshot;
+  using Snapshot = rosbag2_interfaces_backport::srv::Snapshot;
 
   RecordSrvsTest()
   : RecordIntegrationTestFixture()

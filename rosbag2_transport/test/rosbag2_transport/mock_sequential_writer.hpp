@@ -21,7 +21,7 @@
 #include <utility>
 #include <vector>
 
-#include "rosbag2_cpp/writer_interfaces/base_writer_interface.hpp"
+#include "rosbag2_cpp_backport/writer_interfaces/base_writer_interface.hpp"
 
 class MockSequentialWriter : public rosbag2_cpp::writer_interfaces::BaseWriterInterface
 {

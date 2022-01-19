@@ -22,7 +22,7 @@ import threading
 from common import get_rosbag_options, wait_for
 import rclpy
 from rclpy.qos import QoSProfile
-import rosbag2_py
+import rosbag2_py_backport
 from std_msgs.msg import String
 
 if os.environ.get('ROSBAG2_PY_TEST_WITH_RTLD_GLOBAL', None) is not None:
@@ -39,11 +39,11 @@ def test_options_qos_conversion():
         '/topic': QoSProfile(depth=10)
     }
 
-    play_options = rosbag2_py.PlayOptions()
+    play_options = rosbag2_py_backport.PlayOptions()
     play_options.topic_qos_profile_overrides = simple_overrides
     assert play_options.topic_qos_profile_overrides == simple_overrides
 
-    record_options = rosbag2_py.RecordOptions()
+    record_options = rosbag2_py_backport.RecordOptions()
     record_options.topic_qos_profile_overrides = simple_overrides
     assert record_options.topic_qos_profile_overrides == simple_overrides
 
@@ -52,9 +52,9 @@ def test_record_cancel(tmp_path):
     bag_path = str(tmp_path / 'test_record_cancel')
     storage_options, converter_options = get_rosbag_options(bag_path)
 
-    recorder = rosbag2_py.Recorder()
+    recorder = rosbag2_py_backport.Recorder()
 
-    record_options = rosbag2_py.RecordOptions()
+    record_options = rosbag2_py_backport.RecordOptions()
     record_options.all = True
     record_options.is_discovery_disabled = False
     record_options.topic_polling_interval = datetime.timedelta(milliseconds=100)

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "rosbag2_cpp/writers/sequential_writer.hpp"
+#include "rosbag2_cpp_backport/writers/sequential_writer.hpp"
 
 #include <algorithm>
 #include <chrono>
@@ -26,10 +26,10 @@
 
 #include "rcpputils/filesystem_helper.hpp"
 
-#include "rosbag2_cpp/info.hpp"
-#include "rosbag2_cpp/logging.hpp"
+#include "rosbag2_cpp_backport/info.hpp"
+#include "rosbag2_cpp_backport/logging.hpp"
 
-#include "rosbag2_storage/storage_options.hpp"
+#include "rosbag2_storage_backport/storage_options.hpp"
 
 namespace rosbag2_cpp
 {

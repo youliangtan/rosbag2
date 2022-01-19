@@ -21,7 +21,7 @@
 #include <string>
 #include <vector>
 
-#include "rosbag2_cpp/serialization_format_converter_factory_interface.hpp"
+#include "rosbag2_cpp_backport/serialization_format_converter_factory_interface.hpp"
 
 class MockConverterFactory : public rosbag2_cpp::SerializationFormatConverterFactoryInterface
 {
