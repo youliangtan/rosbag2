@@ -35,6 +35,7 @@
 #include "rosbag2_interfaces/srv/get_rate.hpp"
 #include "rosbag2_interfaces/srv/is_paused.hpp"
 #include "rosbag2_interfaces/srv/pause.hpp"
+#include "rosbag2_interfaces/srv/play_for.hpp"
 #include "rosbag2_interfaces/srv/play_next.hpp"
 #include "rosbag2_interfaces/srv/resume.hpp"
 #include "rosbag2_interfaces/srv/set_rate.hpp"
@@ -141,6 +142,17 @@ public:
   ROSBAG2_TRANSPORT_PUBLIC
   void seek(rcutils_time_point_value_t time_point);
 
+  /// \brief Play the next \p duration of messages from the queue when paused.
+  /// \details This is a blocking call and it will wait up to \p duration for available messages
+  /// to be published or the rclcpp context shut down.
+  /// \param duration The time the player must play messages.
+  /// \note If the internal player queue is starved and storage has not been completely loaded,
+  /// this method will wait until a new element is pushed to the queue.
+  /// \return true if Player::play() has been started, the player is in pause mode and successfully
+  /// played messages (at least one) for the specified \p duration, otherwise false.
+  ROSBAG2_TRANSPORT_PUBLIC
+  bool play_for_the_next(const rcutils_duration_value_t duration);
+
 protected:
   bool is_ready_to_play_from_queue_{false};
   std::mutex ready_to_play_from_queue_mutex_;
@@ -193,6 +205,7 @@ private:
   rclcpp::Service<rosbag2_interfaces::srv::GetRate>::SharedPtr srv_get_rate_;
   rclcpp::Service<rosbag2_interfaces::srv::SetRate>::SharedPtr srv_set_rate_;
   rclcpp::Service<rosbag2_interfaces::srv::PlayNext>::SharedPtr srv_play_next_;
+  rclcpp::Service<rosbag2_interfaces::srv::PlayFor>::SharedPtr srv_play_for_the_next_;
   rclcpp::Service<rosbag2_interfaces::srv::Seek>::SharedPtr srv_seek_;
 
   // defaults
