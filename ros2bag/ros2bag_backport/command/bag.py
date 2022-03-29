@@ -24,7 +24,7 @@ class BagCommand(CommandExtension):
 
         # get verb extensions and let them add their arguments
         add_subparsers_on_demand(
-            parser, cli_name, '_verb', 'ros2bag.verb', required=False)
+            parser, cli_name, '_verb', 'ros2bag_backport.verb', required=False)
 
     def main(self, *, parser, args):
         if not hasattr(args, '_verb'):
