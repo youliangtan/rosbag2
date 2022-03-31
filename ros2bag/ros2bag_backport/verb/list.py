@@ -19,7 +19,7 @@ from xml.dom import minidom
 from ament_index_python import get_resource
 from ament_index_python import get_resources
 
-from ros2bag.verb import VerbExtension
+from ros2bag_backport.verb import VerbExtension
 
 
 class ListVerb(VerbExtension):

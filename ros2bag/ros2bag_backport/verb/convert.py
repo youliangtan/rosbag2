@@ -14,9 +14,9 @@
 
 import argparse
 
-from ros2bag.verb import VerbExtension
-from rosbag2_py import bag_rewrite
-from rosbag2_py import StorageOptions
+from ros2bag_backport.verb import VerbExtension
+from rosbag2_py_backport import bag_rewrite
+from rosbag2_py_backport import StorageOptions
 
 
 class ConvertVerb(VerbExtension):

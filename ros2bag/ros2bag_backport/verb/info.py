@@ -14,7 +14,7 @@
 
 import os
 
-from ros2bag.verb import VerbExtension
+from ros2bag_backport.verb import VerbExtension
 
 
 class InfoVerb(VerbExtension):

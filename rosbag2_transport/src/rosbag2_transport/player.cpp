@@ -445,7 +445,7 @@ public:
   explicit
   ClockQoS(
     const rclcpp::QoSInitialization & qos_initialization = rclcpp::KeepLast(1))
-  : QoS(qos_initialization, rmw_qos_profile_sensor_data)
+  : QoS(qos_initialization, rmw_qos_profile_default)
   {}
 };
 
